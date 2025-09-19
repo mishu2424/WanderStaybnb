@@ -1,27 +1,39 @@
 import React from "react";
 import PropTypes from "prop-types"; // ES6
 import { Link } from "react-router-dom";
-import './Slide.css'
+import "./Slide.css";
+import { Parallax } from "react-parallax";
+
 const Slide = ({ bannerImg, btnText, bannerDescription }) => {
   return (
-    <div
-      className="flex items-center justify-center px-6 py-4 mx-auto lg:h-[36rem] lg:py-16 bg-no-repeat bg-cover w-full"
-      style={{ backgroundImage: `url(${bannerImg})` }}
+    <Parallax
+      blur={{ min: -20, max: 20 }}
+      bgImage={bannerImg}
+      bgImageAlt={"banner image"}
+      strength={200}
+      className="flex items-center justify-center px-6 py-4 mx-auto h-screen lg:h-[37.5rem] lg:py-16 bg-no-repeat bg-cover w-full"
     >
+      {/* <div
+      className="flex items-center justify-center px-6 py-4 mx-auto h-screen lg:h-[37.5rem] lg:py-16 bg-no-repeat bg-cover w-full"
+      style={{ backgroundImage: `url(${bannerImg})` }}
+    > */}
       {/* Overlay */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent"></div>
-      <div className="w-full h-1/2 lg:w-1/2 flex items-center justify-center">
-        <div className="max-w-lg text-center text-white font-semibold py-4">
-          <p className="mt-4 relative inline-block font-semibold text-transparent bg-clip-text bg-gradient-to-r from-white via-green-800 to-white animate-shine">{bannerDescription}</p>
+      <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-2xl"></div>
+      <div className="w-full h-1/2 lg:w-full flex items-center justify-center">
+        <div className="max-w-lg text-center text-white font-semibold py-4 bg-white brightness-100 rounded-2xl p-5">
+          <p className="text-sm md:text-lg relative inline-block font-semibold text-transparent bg-clip-text bg-gradient-to-r from-white via-green-800 to-white animate-shine">
+            {bannerDescription}
+          </p>
           <Link
             to={`/categories`}
-            className="btn px-12 py-3 mt-6 text-sm font-medium shadow-none text-center text-white bg-green-800 rounded-lg border-transparent hover:text-green-800 hover:bg-white hover:border-green-800 duration-700"
+            className="btn text-sm md:text-lg px-12 py-3 mt-6 text-sm font-medium shadow-none text-center text-white bg-green-800 rounded-lg border-transparent hover:text-green-800 hover:bg-white hover:border-green-800 duration-700"
           >
             {btnText}
           </Link>
         </div>
       </div>
-    </div>
+      {/* </div> */}
+    </Parallax>
   );
 };
 

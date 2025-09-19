@@ -33,7 +33,7 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    const timer=setInterval(() => {
+    const timer = setInterval(() => {
       setTime(moment().format("dddd, ll, h:mm:ss"));
     }, 1000);
     return () => clearInterval(timer);
@@ -180,6 +180,13 @@ const Navbar = () => {
             tabIndex={0}
             className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 text-green-800 font-semibold"
           >
+            <li>
+              {time && (
+                <span className="text-xs flex md:hidden text-green-800">
+                  {time}
+                </span>
+              )}
+            </li>
             <li>
               <NavLink to={`/categories`}>Dashboard</NavLink>
             </li>

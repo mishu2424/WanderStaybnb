@@ -5,5 +5,5 @@
 
 .animate-shine {
   background-size: 200% auto;
-  animation: shine 3s linear infinite;
+  animation: shine 30s linear infinite;
 }

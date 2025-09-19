@@ -4,6 +4,7 @@ import "swiper/css";
 import 'swiper/css/effect-fade';
 import "swiper/css/pagination";
 import "swiper/css/navigation";
+import './Banner.css'
 
 register();
 import Slide from "./Slide";

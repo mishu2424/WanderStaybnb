@@ -1,0 +1,6 @@
+/* Banner.css */
+swiper-container {
+  --swiper-pagination-color: #ffffff;                /* active */
+  --swiper-pagination-bullet-inactive-color: #095124;
+  --swiper-pagination-bullet-inactive-opacity: 0.6;
+}
