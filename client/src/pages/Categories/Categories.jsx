@@ -29,16 +29,14 @@ const Categories = () => {
         {/* Categories search */}
 
         <div className="flex items-center justify-center my-5">
-          <label className="input w-3/4">
-            <IoLocationOutline />
+          <label className="input w-3/4 border border-green-800">
+            <IoLocationOutline className="text-green-800"/>
 
             <input
               type="search"
               className="grow"
               placeholder="Search by location"
             />
-            <kbd className="kbd kbd-sm">⌘</kbd>
-            <kbd className="kbd kbd-sm">K</kbd>
           </label>
           <Filter sortText={sortText} handleSort={handleSort} />
         </div>
