@@ -3,6 +3,8 @@ import Home from "../pages/Home/Home";
 import ErrorPage from "../pages/ErrorPage";
 import Main from "../layouts/Main";
 import Categories from "../pages/Categories/Categories";
+import Login from "../Authentication/Login";
+import Signup from "../Authentication/Signup";
 
 export const router = createBrowserRouter([
   {
@@ -20,4 +22,12 @@ export const router = createBrowserRouter([
         }
     ]
   },
+  {
+    path:'/login',
+    element:<Login/>
+  },
+  {
+    path:'/signup',
+    element:<Signup/>
+  }
 ]);

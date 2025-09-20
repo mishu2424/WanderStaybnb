@@ -15,7 +15,8 @@
       "isSuperhost": true,
       "response_rate": "100%",
       "response_time": "within an hour",
-      "languages": ["English"]
+      "languages": ["English"],
+      "img":"https://i.ibb.co/8LPVX9gB/Linked-In-Profile.jpg"
     },
     "rating": { "score": 4.81, "reviews": 104 },
     "facility": ["Self check-in", "Dedicated workspace"],
@@ -43,7 +44,7 @@
     "address_line": "Downtown Pattaya, Chonburi, Thailand"
   },
   {
-    "location": "Pattaya, Thailand",
+    "location": "Cox's Bazar, Chittagong, Bangladesh",
     "category": "Beach",
     "title": "High-Rise Sea View 1BR • Sky Pool • Walk to Beach",
     "from": "2024-06-10T18:00:00.000Z",
@@ -55,6 +56,7 @@
     "host": {
       "name": "Jason",
       "email": "mishutishu755@gmail.com",
+      "img":"https://i.ibb.co/8LPVX9gB/Linked-In-Profile.jpg",
       "isSuperhost": true,
       "response_rate": "100%",
       "response_time": "within an hour",
@@ -97,48 +99,7 @@
     "host": {
       "name": "Jason",
       "email": "mishutishu755@gmail.com",
-      "isSuperhost": true,
-      "response_rate": "100%",
-      "response_time": "within an hour",
-      "languages": ["English"]
-    },
-    "rating": { "score": 4.9, "reviews": 58 },
-    "facility": ["Dedicated workspace", "24/7 security"],
-    "amenities": [
-      "Wi-Fi",
-      "Air conditioning",
-      "TV",
-      "Kitchen",
-      "Stovetop",
-      "Washer",
-      "Pool",
-      "Gym",
-      "Elevator",
-      "Beach access (walkable)",
-      "First aid kit",
-      "Smoke alarm"
-    ],
-    "description": "Bright and functional 1BR with fast Wi-Fi, a proper desk, and access to pool and gym. Walk to the night market, cafés, and the beach in minutes.",
-    "image": "https://i.ibb.co/XZB0j7Qr/banner-1.jpg",
-    "check_in": "15:00",
-    "check_out": "11:00",
-    "house_rules": ["No parties", "No pets", "Please remove shoes indoors"],
-    "cancellation_policy": "Flexible",
-    "address_line": "Central Pattaya, Chonburi, Thailand"
-  },
-  {
-    "location": "Pattaya, Thailand",
-    "category": "Beach",
-    "title": "Central Pattaya 1BR • Pool & Workspace • Near Night Market",
-    "from": "2024-07-02T18:00:00.000Z",
-    "to": "2024-07-05T18:00:00.000Z",
-    "price": 95,
-    "guests": "2",
-    "bathrooms": "1",
-    "bedrooms": "1",
-    "host": {
-      "name": "Jason",
-      "email": "mishutishu755@gmail.com",
+      "img":"https://i.ibb.co/8LPVX9gB/Linked-In-Profile.jpg",
       "isSuperhost": true,
       "response_rate": "100%",
       "response_time": "within an hour",
