@@ -40,7 +40,7 @@
     "check_in": "15:00",
     "check_out": "11:00",
     "house_rules": ["No smoking", "No parties or events", "Pets not allowed"],
-    "cancellation_policy": "Flexible",
+    "cancellation_policy": "Flexible (24hours before)",
     "address_line": "Downtown Pattaya, Chonburi, Thailand"
   },
   {
@@ -83,7 +83,7 @@
     "check_in": "15:00",
     "check_out": "11:00",
     "house_rules": ["No smoking", "No pets", "Respect quiet hours after 22:00"],
-    "cancellation_policy": "Moderate",
+    "cancellation_policy": "Flexible (24hours before)",
     "address_line": "Pattaya Beach Road, Pattaya, Thailand"
   },
   {
@@ -126,7 +126,7 @@
     "check_in": "15:00",
     "check_out": "11:00",
     "house_rules": ["No parties", "No pets", "Please remove shoes indoors"],
-    "cancellation_policy": "Flexible",
+    "cancellation_policy": "Flexible (24hours before)",
     "address_line": "Central Pattaya, Chonburi, Thailand"
   }
 ]

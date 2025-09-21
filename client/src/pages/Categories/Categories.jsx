@@ -4,6 +4,7 @@ import { IoLocationOutline } from "react-icons/io5";
 import { categories } from "./CategoriesData";
 import CategoryBox from "./CategoryBox";
 import Container from "../../components/shared/Container";
+import Rooms from "../../components/Rooms/Rooms";
 const Categories = () => {
   const [sortText, setSortText] = useState("");
   const handleSort = (sortType) => {
@@ -25,7 +26,7 @@ const Categories = () => {
   };
   return (
     <Container>
-      <div>
+      <div className="space-y-5">
         {/* Categories search */}
 
         <div className="flex items-center justify-center my-5">
@@ -45,6 +46,7 @@ const Categories = () => {
             <CategoryBox key={item.label} label={item.label} icon={item.icon} />
           ))}
         </div>
+        <Rooms/>
       </div>
     </Container>
   );

@@ -25,7 +25,7 @@ const Slide = ({ bannerImg, btnText, bannerDescription }) => {
             {bannerDescription}
           </p>
           <Link
-            to={`/categories`}
+            to={`/rooms`}
             className="btn text-sm md:text-lg px-12 py-3 mt-6 text-sm font-medium shadow-none text-center text-white bg-green-800 rounded-lg border-transparent hover:text-green-800 hover:bg-white hover:border-green-800 duration-700"
           >
             {btnText}

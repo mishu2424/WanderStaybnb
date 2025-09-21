@@ -109,7 +109,7 @@ const Navbar = ({ path }) => {
         <ul className="menu menu-horizontal px-1 text-green-800 font-semibold">
           <li>
             {path === "/" ? (
-              <NavLink to={"/categories"}>Categories</NavLink>
+              <NavLink to={"/rooms"}>Categories</NavLink>
             ) : (
               <NavLink to={"/"}>Home</NavLink>
             )}

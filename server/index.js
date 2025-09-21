@@ -47,6 +47,7 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
+    const roomsCollection=client.db("WanderStay_db").collection("rooms");
     // auth related api
     app.post("/jwt", async (req, res) => {
       const user = req.body;
@@ -61,6 +62,19 @@ async function run() {
         })
         .send({ success: true });
     });
+
+
+    app.get('/rooms', async(req,res)=>{
+        const result=await roomsCollection.find().toArray();
+        res.send(result);
+    })
+
+    app.get('/room/:id', async(req,res)=>{
+      const id=req.params.id;
+      const result=await roomsCollection.findOne({_id:new ObjectId(id)});
+      res.send(result);
+    })
+
     // Logout
     app.get("/logout", async (req, res) => {
       try {
@@ -89,9 +103,9 @@ async function run() {
 run().catch(console.dir);
 
 app.get("/", (req, res) => {
-  res.send("Hello from StayVista Server..");
+  res.send("Hello from WanderStay Server..");
 });
 
 app.listen(port, () => {
-  console.log(`StayVista is running on port ${port}`);
+  console.log(`WanderStay is running on port ${port}`);
 });

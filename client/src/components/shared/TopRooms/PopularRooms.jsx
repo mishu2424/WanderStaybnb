@@ -2,17 +2,21 @@ import { useEffect, useState } from "react";
 
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-
+import { useQuery } from "@tanstack/react-query";
 import Slider from "./Slider";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import LoadingSpinner from "../LoadingSpinner";
 const PopularRooms = () => {
-  const [rooms, setRooms] = useState([]);
+  const axiosSecure = useAxiosSecure();
+  const { data: rooms, isLoading } = useQuery({
+    queryKey: ["popular-rooms"],
+    queryFn: async () => {
+      const { data } = await axiosSecure("/rooms");
+      return data;
+    },
+  });
 
-  useEffect(() => {
-    fetch("/rooms.json") // because it's in /public
-      .then((r) => r.json())
-      .then(setRooms)
-      .catch(console.error);
-  }, []);
+  if (isLoading) return <LoadingSpinner />;
 
   return (
     <Carousel
