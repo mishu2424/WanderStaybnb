@@ -7,6 +7,7 @@ import Login from "../Authentication/Login";
 import Signup from "../Authentication/Signup";
 import RoomDetails from "../components/Rooms/RoomDetails";
 import PrivateRoute from "./PrivateRoute";
+import Dashboard from "../pages/Dashboard/Dashboard";
 
 export const router = createBrowserRouter([
   {
@@ -40,4 +41,8 @@ export const router = createBrowserRouter([
     path: "signup",
     element: <Signup />,
   },
+  {
+    path:'dashboard',
+    element:<Dashboard/>
+  }
 ]);

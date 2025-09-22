@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import companyLogo from "../../../assets/images/wanderstay.png";
 import Container from "../Container";
 import PopularRooms from "./PopularRooms";
@@ -15,8 +16,11 @@ const TopRooms = () => {
               className="w-full lg:w-3/4 h-3/4 object-cover"
             />
           </div>
-          <div className="relative w-full h-3/4 object-cover flex items-center justify-center">
+          <div className="relative w-full h-3/4 object-cover flex flex-col justify-center gap-5">
             <PopularRooms />
+            <Link to={`/rooms`} className="w-full btn px-8 py-2 bg-green-800 text-white cursor-pointer hover:bg-white hover:border-green-800 hover:text-green-800">
+                Explore More
+            </Link>
           </div>
         </div>
       </div>
