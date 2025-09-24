@@ -21,7 +21,6 @@ import {
   //   FaShareAlt,
 } from "react-icons/fa6";
 import { useParams } from "react-router-dom";
-import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
 import LoadingSpinner from "../shared/LoadingSpinner";
 import Fact from "./Fact";
@@ -37,7 +36,8 @@ import { TbAirConditioning } from "react-icons/tb";
 import RoomReservation from "./RoomReservation";
 import Container from "../shared/Container";
 import { useState } from "react";
-
+import useAxiosCommon from "../../hooks/useAxiosCommon";
+import useAuth from "../../hooks/useAuth";
 
 const amenityIcon = (name) => {
   const n = name.toLowerCase();
@@ -57,8 +57,9 @@ const amenityIcon = (name) => {
 
 export default function RoomDetailsCard() {
   const [bookmarked, setBookmarked] = useState(false);
+  const { theme } = useAuth();
   const { id } = useParams();
-  const axiosSecure = useAxiosSecure();
+  const axiosCommon = useAxiosCommon();
   const {
     data: room = {},
     isLoading,
@@ -66,7 +67,7 @@ export default function RoomDetailsCard() {
   } = useQuery({
     queryKey: ["room", id],
     queryFn: async () => {
-      const res = await axiosSecure(`room/${id}`);
+      const res = await axiosCommon(`room/${id}`);
       return res.data;
     },
   });
@@ -88,8 +89,6 @@ export default function RoomDetailsCard() {
     amenities = [],
     description,
     image,
-    check_in,
-    check_out,
     house_rules = [],
     cancellation_policy,
     cancellation_before,
@@ -133,35 +132,35 @@ export default function RoomDetailsCard() {
               title="Save"
               aria-label="Save"
             >
-        {bookmarked ? (
-          // Filled heart
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            className="z-50 w-6 h-6 text-red-500 cursor-pointer group-hover:text-red-500"
-            onClick={() => setBookmarked(false)}
-          >
-            <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
-          </svg>
-        ) : (
-          // Outline heart
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="z-50 w-6 h-6 text-white drop-shadow cursor-pointer group-hover:text-red-500"
-            onClick={() => setBookmarked(true)}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
-            />
-          </svg>
-        )}
+              {bookmarked ? (
+                // Filled heart
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="z-50 w-6 h-6 text-red-500 cursor-pointer group-hover:text-red-500"
+                  onClick={() => setBookmarked(false)}
+                >
+                  <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
+                </svg>
+              ) : (
+                // Outline heart
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="z-50 w-6 h-6 text-white drop-shadow cursor-pointer group-hover:text-red-500"
+                  onClick={() => setBookmarked(true)}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
+                  />
+                </svg>
+              )}
             </button>
             <button
               type="button"
@@ -181,7 +180,7 @@ export default function RoomDetailsCard() {
           {/* Title & rating */}
           <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
             <div>
-              <h1 className="text-lg md:text-xl font-semibold leading-tight">
+              <h1 className={`text-lg md:text-xl font-semibold leading-tight ${theme==="night" && `text-black`}`}>
                 {title}
               </h1>
               <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-gray-600">
@@ -226,7 +225,7 @@ export default function RoomDetailsCard() {
             />
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <p className="font-medium truncate">Hosted by {host?.name}</p>
+                <p className={`font-medium truncate ${theme==="night" && `text-black`}`}>Hosted by {host?.name}</p>
                 {host?.isSuperhost && (
                   <span className="text-[11px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                     Superhost
@@ -245,7 +244,7 @@ export default function RoomDetailsCard() {
 
           {/* Amenities */}
           <section className="mt-6">
-            <h2 className="text-sm font-semibold mb-3">
+            <h2 className={`text-sm font-semibold mb-3 ${theme==="night" && `text-black`}`}>
               What this place offers
             </h2>
             <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
@@ -264,7 +263,7 @@ export default function RoomDetailsCard() {
           {/* Stay details */}
           <section className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-3">
             <div className="p-4 border rounded-xl col-span-2">
-              <h3 className="text-sm font-semibold mb-2">House rules</h3>
+              <h3 className={`text-sm font-semibold mb-2 ${theme==="night" && `text-black`}`}>House rules</h3>
               <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
                 {house_rules.map((r) => (
                   <li key={r}>{r}</li>
@@ -276,11 +275,11 @@ export default function RoomDetailsCard() {
               </div>
               <div className="flex items-center gap-2">
                 <FaShieldAlt className="text-gray-600" />
-                <span className="text-sm">24/7 security on site</span>
+                <span className={`text-sm ${theme==="night" && `text-black`}`}>24/7 security on site</span>
               </div>
             </div>
             <div className="col-span-1 w-80">
-              <RoomReservation from={from} to={to} price={price}/>
+              <RoomReservation from={from} to={to} price={price} />
               <button className="px-4 py-2 w-full rounded-lg bg-green-800 text-white hover:bg-green-700 transition cursor-pointer">
                 Reserve
               </button>

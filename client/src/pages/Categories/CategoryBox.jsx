@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import queryString from "query-string";
 // eslint-disable-next-line no-unused-vars
-const CategoryBox = ({ label, icon: Icon }) => {
+const CategoryBox = ({ label, icon: Icon, handleCategoryChange }) => {
   //   const navigate=useNavigate();
   // eslint-disable-next-line no-unused-vars
   const [params, setParams] = useSearchParams();
@@ -22,7 +22,7 @@ const CategoryBox = ({ label, icon: Icon }) => {
   };
   return (
     <div
-      onClick={handleCategoryRoute}
+      onClick={() => handleCategoryChange(label)}
       className={`flex 
   flex-col 
   items-center 

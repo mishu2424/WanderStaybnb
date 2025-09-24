@@ -7,7 +7,10 @@ import Login from "../Authentication/Login";
 import Signup from "../Authentication/Signup";
 import RoomDetails from "../components/Rooms/RoomDetails";
 import PrivateRoute from "./PrivateRoute";
-import Dashboard from "../pages/Dashboard/Dashboard";
+import Profile from "../components/Profile";
+import AddRoom from "../pages/Dashboard/Host/AddRoom/AddRoom";
+import DashboardLayout from "../layouts/DashboardLayout";
+import Statistics from "../pages/Dashboard/Host/AddRoom/Statistics";
 
 export const router = createBrowserRouter([
   {
@@ -42,7 +45,25 @@ export const router = createBrowserRouter([
     element: <Signup />,
   },
   {
-    path:'dashboard',
-    element:<Dashboard/>
-  }
+    path: "/dashboard",
+    element: (
+      <PrivateRoute>
+        <DashboardLayout />
+      </PrivateRoute>
+    ),
+    children: [
+      {
+        index:true,
+        element: <Statistics />,
+      },
+      {
+        path: "add-room",
+        element: <AddRoom />,
+      },
+      {
+        path: "profile",
+        element: <Profile />,
+      },
+    ],
+  },
 ]);

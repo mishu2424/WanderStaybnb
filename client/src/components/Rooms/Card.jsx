@@ -2,9 +2,12 @@ import React from "react";
 import { Link } from "react-router-dom";
 import ReactStars from "react-rating-stars-component";
 import { FaStar, FaStarHalfAlt } from "react-icons/fa";
+import useAuth from "../../hooks/useAuth";
 
 const Card = ({ room }) => {
   const { _id: id, location, image, title, rating, price, amenities } = room;
+  const { theme } = useAuth();
+
   return (
     <article className="relative rounded-2xl shadow-sm  bg-white overflow-hidden hover:shadow-md hover:scale-105 duration-300">
       <Link to={`/room/${id}`}>
@@ -12,6 +15,7 @@ const Card = ({ room }) => {
           <img
             src={image}
             alt={title}
+            referrerPolicy="no-referrer"
             className="w-full h-44 object-cover group-hover:scale-105 hover:brightness-70 duration-500"
             loading="lazy"
           />
@@ -35,7 +39,7 @@ const Card = ({ room }) => {
       <div className="p-4">
         <div className="flex items-start justify-between gap-3">
           <h3
-            className="font-semibold text-[15px] tracking-wide uppercase truncate"
+            className={`font-semibold text-[15px] tracking-wide uppercase truncate ${theme==="night" && `text-black`}`}
             title={title}
           >
             {title}
@@ -48,22 +52,16 @@ const Card = ({ room }) => {
         </p>
 
         <div className="flex items-center justify-between">
-          <p className="mt-3 text-lg font-semibold">${price}</p>
+          <p className={`mt-3 text-lg font-semibold ${theme==="night" && `text-black`}`}>${price}</p>
           <div className="text-gray-800 flex items-center gap-1">
             <ReactStars
               count={5}
               size={10}
               isHalf={true}
-              value={rating?.score || 0}
-              emptyIcon={
-                <FaStar className="text-gray-300" />
-              } // Empty stars
-              halfIcon={
-                <FaStarHalfAlt className="text-yellow-500" />
-              } // Half stars
-              filledIcon={
-                <FaStar className="text-yellow-500" />
-              } // Full stars
+              value={parseFloat(rating?.score) || 0}
+              emptyIcon={<FaStar className="text-gray-300" />} // Empty stars
+              halfIcon={<FaStarHalfAlt className="text-yellow-500" />} // Half stars
+              filledIcon={<FaStar className="text-yellow-500" />} // Full stars
               activeColor="text-yellow-500"
             />
             <span className="text-xs font-medium">

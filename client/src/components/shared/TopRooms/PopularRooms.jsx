@@ -4,14 +4,14 @@ import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { useQuery } from "@tanstack/react-query";
 import Slider from "./Slider";
-import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import LoadingSpinner from "../LoadingSpinner";
+import useAxiosCommon from "../../../hooks/useAxiosCommon";
 const PopularRooms = () => {
-  const axiosSecure = useAxiosSecure();
+  const axiosCommon = useAxiosCommon();
   const { data: rooms, isLoading } = useQuery({
     queryKey: ["popular-rooms"],
     queryFn: async () => {
-      const { data } = await axiosSecure("/rooms");
+      const { data } = await axiosCommon("/rooms");
       return data;
     },
   });

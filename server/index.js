@@ -47,7 +47,7 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    const roomsCollection=client.db("WanderStay_db").collection("rooms");
+    const roomsCollection = client.db("WanderStay_db").collection("rooms");
     // auth related api
     app.post("/jwt", async (req, res) => {
       const user = req.body;
@@ -63,17 +63,84 @@ async function run() {
         .send({ success: true });
     });
 
+    app.get("/rooms", async (req, res) => {
+      const page = parseInt(req?.query?.page) || 1;
+      const limit = parseInt(req?.query?.limit) || 10;
+      const skip = (page - 1) * limit;
+      const categoryName = req?.query?.category;
+      const search = req?.query?.search;
+      const sort = req?.query?.sort;
 
-    app.get('/rooms', async(req,res)=>{
-        const result=await roomsCollection.find().toArray();
-        res.send(result);
-    })
+      let query = {};
 
-    app.get('/room/:id', async(req,res)=>{
-      const id=req.params.id;
-      const result=await roomsCollection.findOne({_id:new ObjectId(id)});
+      if (search) {
+        query = {
+          $or: [
+            { location: { $regex: search, $options: "i" } },
+            { category: { $regex: search, $options: "i" } },
+            { title: { $regex: search, $options: "i" } },
+          ],
+        };
+      }
+
+      let options = {};
+      if (sort === "asc-p") {
+        options = { price: "-1" };
+        console.log("entered");
+      } else if (sort === "desc-p") {
+        options = { price: "1" };
+      } else if (sort === "asc-r") {
+        options = { "rating.score": "-1" };
+      } else if (sort === "desc-r") {
+        options = { "rating.score": "1" };
+      }
+
+      if (categoryName) {
+        query = { ...query, category: categoryName };
+      }
+
+      const result = await roomsCollection
+        .find(query)
+        .sort(options)
+        .skip(skip)
+        .limit(limit)
+        .toArray();
       res.send(result);
-    })
+    });
+
+    app.get("/rooms-count", async (req, res) => {
+      const categoryName = req?.query?.category;
+      const search = req?.query?.search;
+      let query = {};
+      if (search) {
+        query = {
+          $or: [
+            { location: { $regex: search, $options: "i" } },
+            { category: { $regex: search, $options: "i" } },
+            { title: { $regex: search, $options: "i" } },
+          ],
+        };
+      }
+
+      if (categoryName) {
+        query = { ...query, category: categoryName };
+      }
+
+      const count = await roomsCollection.countDocuments(query);
+      res.send({ count });
+    });
+
+    app.get("/room/:id", async (req, res) => {
+      const id = req.params.id;
+      const result = await roomsCollection.findOne({ _id: new ObjectId(id) });
+      res.send(result);
+    });
+
+    app.post("/rooms", async (req, res) => {
+      const room = req?.body;
+      const result = await roomsCollection.insertOne(room);
+      res.send(result);
+    });
 
     // Logout
     app.get("/logout", async (req, res) => {

@@ -5,8 +5,10 @@ import { useEffect } from "react";
 import { Calendar, DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css"; // main css file
 import "react-date-range/dist/theme/default.css"; // theme css file
+import useAuth from "../../hooks/useAuth";
 
 const RoomReservation = ({ from, to, price }) => {
+  const {theme}=useAuth();
   const TAX_RATE = 0.13; // 13% (change if needed)
   const [state, setState] = useState([
     {
@@ -49,11 +51,11 @@ const RoomReservation = ({ from, to, price }) => {
     <>
       {/* Price & actions */}
       <div className="mt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-        <div className="text-lg sm:text-xl font-semibold">
+        <div className={`text-lg sm:text-xl font-semibold ${theme==="night" && `text-black`}`}>
           ${price}{" "}
           <span className="text-sm font-normal text-gray-500">/ night</span>
         </div>
-        <div className="text-lg sm:text-xl font-semibold">
+        <div className={`text-lg sm:text-xl font-semibold ${theme==="night" && `text-black`}`}>
           Total: ${total}{" "}
         </div>
       </div>
