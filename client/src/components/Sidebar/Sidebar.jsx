@@ -5,7 +5,7 @@ import { BsFillHouseAddFill, BsFingerprint } from "react-icons/bs";
 import { GrUserAdmin } from "react-icons/gr";
 import { AiOutlineBars } from "react-icons/ai";
 import { BsGraphUp } from "react-icons/bs";
-import { NavLink } from "react-router-dom";
+import { Navigate, NavLink } from "react-router-dom";
 import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import { MdHomeWork } from "react-icons/md";
@@ -16,6 +16,7 @@ import MenuItem from "./Menu/MenuItem";
 import GuestMenu from "./Menu/GuestMenu";
 import HostMenu from "./Menu/HostMenu";
 import AdminMenu from "./Menu/AdminMenu";
+import ToggleBtn from "../shared/Button/Togglebtn";
 const Sidebar = () => {
   const { logOut } = useAuth();
   const [role, isLoading] = useRole();
@@ -30,7 +31,6 @@ const Sidebar = () => {
   // toggleBtn
   const toggleHandler = (e) => {
     console.log(e.target.checked);
-
     setToggle(!toggle);
   };
 
@@ -74,6 +74,7 @@ const Sidebar = () => {
                 />
               </Link>
             </div>
+            {role === "host" && <ToggleBtn toggleHandler={toggleHandler} />}
           </div>
 
           {/* Nav Items */}
@@ -89,9 +90,17 @@ const Sidebar = () => {
                 icon={BsGraphUp}
               />
 
-              {role==="guest" && <GuestMenu/>}
-              {role==="host" && <HostMenu/>}
-              {role==="admin" && <AdminMenu/>}
+              {role === "guest" && <GuestMenu />}
+              {role === "host" ? (
+                !toggle ? (
+                  <HostMenu />
+                ) : (
+                  <GuestMenu />
+                )
+              ) : (
+                <Navigate to="/dashboard" />
+              )}
+              {role === "admin" && <AdminMenu />}
             </nav>
           </div>
         </div>

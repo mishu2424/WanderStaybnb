@@ -6,8 +6,10 @@ const SliderCard = ({ id, img, location, rating, title }) => {
 
   return (
     <Link to={`/room/${id}`}>
-      <div className="relative">
-        <img className="w-full h-full" src={img} alt={title} />
+      <div className="relative group">
+        <div className="overflow-hidden">
+          <img className="w-full h-full group-hover:scale-110 duration-500" src={img} alt={title} />
+        </div>
         <div className="flex items-center justify-between">
           <h4 className="text-base font-bold">{location}</h4>
           <div className="flex items-center gap-1">

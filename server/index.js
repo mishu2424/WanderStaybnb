@@ -47,6 +47,7 @@ async function run() {
   try {
     const roomsCollection = client.db("WanderStay_db").collection("rooms");
     const usersCollection = client.db("WanderStay_db").collection("users");
+    const bookingCollection = client.db("WanderStay_db").collection("bookings");
     // auth related api
     app.post("/jwt", async (req, res) => {
       const user = req.body;
@@ -146,12 +147,12 @@ async function run() {
       res.send(result);
     });
 
-    app.get('/user/:email', async(req,res)=>{
-      const email=req?.params?.email;
+    app.get("/user/:email", async (req, res) => {
+      const email = req?.params?.email;
 
-      const result=await usersCollection.findOne({email});
+      const result = await usersCollection.findOne({ email });
       res.send(result);
-    })
+    });
 
     app.put("/users", async (req, res) => {
       const user = req?.body;
@@ -200,6 +201,42 @@ async function run() {
       };
 
       const result = await usersCollection.updateOne({ email }, updatedDoc);
+      res.send(result);
+    });
+
+    // booking
+    app.get(`/bookings/:email`, async (req, res) => {
+      const email = req?.params?.email;
+      const query = { "guest.email": email };
+      const result = await bookingCollection.find(query).toArray();
+      res.send(result);
+    });
+
+    app.post("/booking", async (req, res) => {
+      const booking = req?.body;
+      const result = await bookingCollection.insertOne(booking);
+      res.send(result);
+    });
+
+    app.patch("/update-room-status/:id", async (req, res) => {
+      const id = req?.params?.id;
+      const { status } = req?.body;
+
+      const query = { _id: new ObjectId(id) };
+      const updatedDoc = {
+        $set: {
+          booked: status,
+        },
+      };
+      const result = await roomsCollection.updateOne(query, updatedDoc);
+      res.send(result);
+    });
+
+    // my-listings
+    app.get(`/listings/:email`, async (req, res) => {
+      const email = req?.params?.email;
+      const query = { "host.email": email };
+      const result = await bookingCollection.find(query).toArray();
       res.send(result);
     });
 

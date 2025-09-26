@@ -8,12 +8,13 @@ import Signup from "../Authentication/Signup";
 import RoomDetails from "../components/Rooms/RoomDetails";
 import PrivateRoute from "./PrivateRoute";
 import Profile from "../components/Profile";
-import AddRoom from "../pages/Dashboard/Host/AddRoom/AddRoom";
+import AddRoom from "../pages/Dashboard/Host/AddRoom";
 import DashboardLayout from "../layouts/DashboardLayout";
-import Statistics from "../pages/Dashboard/Host/AddRoom/Statistics";
+import Statistics from "../pages/Dashboard/Statistics";
 import ManageUsers from "../pages/Dashboard/Admin/ManageUsers";
 import AdminRoute from "./AdminRoute";
 import HostRoute from "./HostRoute";
+import MyBookings from "../pages/Dashboard/Guest/MyBookings";
 
 export const router = createBrowserRouter([
   {
@@ -59,6 +60,13 @@ export const router = createBrowserRouter([
         index: true,
         element: <Statistics />,
       },
+      // guest
+      {
+        path:'my-bookings',
+        element:<MyBookings/>,
+      },
+
+      // host
       {
         path: "add-room",
         element: (

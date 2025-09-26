@@ -34,11 +34,9 @@ const UserDataRow = ({ user, refetch }) => {
   });
 
   const modalHandler = async (role) => {
-    console.log(
-      loggedInUser?.email === user?.email,
-      loggedInUser?.email,
-      user?.email
-    );
+    if (user?.status !== "Requested") {
+      return "Can not change the status of user unless user requests for the change!";
+    }
     if (loggedInUser?.email === user?.email) {
       return toast.error("Admin can not change his own role");
     }

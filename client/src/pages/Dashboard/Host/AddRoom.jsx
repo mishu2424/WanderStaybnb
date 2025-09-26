@@ -1,11 +1,11 @@
 import { useState } from "react";
-import AddRoomForm from "../../../../components/shared/Form/AddRoomForm";
-import useAuth from "../../../../hooks/useAuth";
+import AddRoomForm from "../../../components/shared/Form/AddRoomForm";
+import useAuth from "../../../hooks/useAuth";
 import { FaUser } from "react-icons/fa";
 import { useMutation } from "@tanstack/react-query";
-import useAxiosSecure from "../../../../hooks/useAxiosSecure";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import toast from "react-hot-toast";
-import { ImageBBUpload } from "../../../../api/utilities";
+import { ImageBBUpload } from "../../../api/utilities";
 import { useNavigate } from "react-router-dom";
 
 const AddRoom = () => {

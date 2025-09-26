@@ -56,10 +56,18 @@ const amenityIcon = (name) => {
 };
 
 export default function RoomDetailsCard() {
+  const { user, loading } = useAuth();
   const [bookmarked, setBookmarked] = useState(false);
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const { theme } = useAuth();
   const { id } = useParams();
   const axiosCommon = useAxiosCommon();
+
+
+  const closeModal = () => {
+    setIsBookingModalOpen(false);
+  };
+
   const {
     data: room = {},
     isLoading,
@@ -72,7 +80,7 @@ export default function RoomDetailsCard() {
     },
   });
 
-  if (isLoading) return <LoadingSpinner />;
+  if (isLoading||loading) return <LoadingSpinner />;
   const {
     location,
     category,
@@ -96,8 +104,6 @@ export default function RoomDetailsCard() {
   } = room || {};
 
   // console.log(room);
-
-  refetch();
   return (
     <article className="shadow-sm bg-white overflow-hidden">
       {/* Header / media */}
@@ -180,7 +186,11 @@ export default function RoomDetailsCard() {
           {/* Title & rating */}
           <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
             <div>
-              <h1 className={`text-lg md:text-xl font-semibold leading-tight ${theme==="night" && `text-black`}`}>
+              <h1
+                className={`text-lg md:text-xl font-semibold leading-tight ${
+                  theme === "night" && `text-black`
+                }`}
+              >
                 {title}
               </h1>
               <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-gray-600">
@@ -225,7 +235,13 @@ export default function RoomDetailsCard() {
             />
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <p className={`font-medium truncate ${theme==="night" && `text-black`}`}>Hosted by {host?.name}</p>
+                <p
+                  className={`font-medium truncate ${
+                    theme === "night" && `text-black`
+                  }`}
+                >
+                  Hosted by {host?.name}
+                </p>
                 {host?.isSuperhost && (
                   <span className="text-[11px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
                     Superhost
@@ -244,7 +260,11 @@ export default function RoomDetailsCard() {
 
           {/* Amenities */}
           <section className="mt-6">
-            <h2 className={`text-sm font-semibold mb-3 ${theme==="night" && `text-black`}`}>
+            <h2
+              className={`text-sm font-semibold mb-3 ${
+                theme === "night" && `text-black`
+              }`}
+            >
               What this place offers
             </h2>
             <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
@@ -263,7 +283,13 @@ export default function RoomDetailsCard() {
           {/* Stay details */}
           <section className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-3">
             <div className="p-4 border rounded-xl col-span-2">
-              <h3 className={`text-sm font-semibold mb-2 ${theme==="night" && `text-black`}`}>House rules</h3>
+              <h3
+                className={`text-sm font-semibold mb-2 ${
+                  theme === "night" && `text-black`
+                }`}
+              >
+                House rules
+              </h3>
               <ul className="list-disc list-inside text-sm text-gray-700 space-y-1">
                 {house_rules.map((r) => (
                   <li key={r}>{r}</li>
@@ -275,14 +301,20 @@ export default function RoomDetailsCard() {
               </div>
               <div className="flex items-center gap-2">
                 <FaShieldAlt className="text-gray-600" />
-                <span className={`text-sm ${theme==="night" && `text-black`}`}>24/7 security on site</span>
+                <span
+                  className={`text-sm ${theme === "night" && `text-black`}`}
+                >
+                  24/7 security on site
+                </span>
               </div>
             </div>
             <div className="col-span-1 w-80">
-              <RoomReservation from={from} to={to} price={price} />
-              <button className="px-4 py-2 w-full rounded-lg bg-green-800 text-white hover:bg-green-700 transition cursor-pointer">
-                Reserve
-              </button>
+              <RoomReservation
+                bookingInfo={{ ...room }}
+                closeModal={closeModal}
+                setIsBookingModalOpen={setIsBookingModalOpen}
+                isOpen={isBookingModalOpen}
+              />
             </div>
           </section>
         </div>

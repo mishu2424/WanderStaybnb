@@ -138,7 +138,7 @@ const Navbar = ({ path }) => {
       <div className="hidden md:block">
         {/* {!user && ( */}
         <button
-          // disabled={!user}
+          disabled={!user}
           onClick={() => setIsOpen(true)}
           className="disabled:cursor-not-allowed text-green-800 cursor-pointer bg-green-100 py-3 px-4 text-sm font-semibold rounded-full  transition"
         >
