@@ -9,9 +9,16 @@ import { NavLink } from "react-router-dom";
 import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import { MdHomeWork } from "react-icons/md";
-import companyLogo from '../../assets/images/wanderstay.png'
+import companyLogo from "../../assets/images/wanderstay.png";
+import useRole from "../../hooks/useRole";
+import LoadingSpinner from "../shared/LoadingSpinner";
+import MenuItem from "./Menu/MenuItem";
+import GuestMenu from "./Menu/GuestMenu";
+import HostMenu from "./Menu/HostMenu";
+import AdminMenu from "./Menu/AdminMenu";
 const Sidebar = () => {
   const { logOut } = useAuth();
+  const [role, isLoading] = useRole();
   const [isActive, setActive] = useState(false);
   const [toggle, setToggle] = useState(true);
 
@@ -26,6 +33,8 @@ const Sidebar = () => {
 
     setToggle(!toggle);
   };
+
+  if (isLoading) return <LoadingSpinner />;
   return (
     <>
       {/* Small Screen Navbar */}
@@ -33,11 +42,7 @@ const Sidebar = () => {
         <div>
           <div className="block cursor-pointer p-4 font-bold">
             <Link to="/">
-              <img
-                className='w-10 h-10'
-                src={companyLogo}
-                alt="logo"
-              />
+              <img className="w-10 h-10" src={companyLogo} alt="logo" />
             </Link>
           </div>
         </div>
@@ -61,7 +66,7 @@ const Sidebar = () => {
             <div className="w-full flex px-4 py-2 rounded-lg justify-center items-center mx-auto">
               <Link to="/">
                 <img
-                //   className='hidden md:block'
+                  //   className='hidden md:block'
                   src={companyLogo}
                   alt="logo"
                   width="100"
@@ -78,46 +83,15 @@ const Sidebar = () => {
             {/*  Menu Items */}
             <nav>
               {/* Statistics */}
-              <NavLink
-                to="/dashboard"
-                end
-                className={({ isActive }) =>
-                  `flex items-center px-4 py-2 my-5  transition-colors duration-300 transform  hover:bg-gray-300   hover:text-gray-700 ${
-                    isActive ? "bg-gray-300  text-gray-700" : "text-gray-600"
-                  }`
-                }
-              >
-                <BsGraphUp className="w-5 h-5" />
+              <MenuItem
+                address={`/dashboard`}
+                label={"Statistics"}
+                icon={BsGraphUp}
+              />
 
-                <span className="mx-4 font-medium">Statistics</span>
-              </NavLink>
-
-              {/* Add Room */}
-              <NavLink
-                to="add-room"
-                className={({ isActive }) =>
-                  `flex items-center px-4 py-2 my-5  transition-colors duration-300 transform  hover:bg-gray-300   hover:text-gray-700 ${
-                    isActive ? "bg-gray-300  text-gray-700" : "text-gray-600"
-                  }`
-                }
-              >
-                <BsFillHouseAddFill className="w-5 h-5" />
-
-                <span className="mx-4 font-medium">Add Room</span>
-              </NavLink>
-              {/* My Listing */}
-              <NavLink
-                to="my-listings"
-                className={({ isActive }) =>
-                  `flex items-center px-4 py-2 my-5  transition-colors duration-300 transform  hover:bg-gray-300   hover:text-gray-700 ${
-                    isActive ? "bg-gray-300  text-gray-700" : "text-gray-600"
-                  }`
-                }
-              >
-                <MdHomeWork className="w-5 h-5" />
-
-                <span className="mx-4 font-medium">My Listings</span>
-              </NavLink>
+              {role==="guest" && <GuestMenu/>}
+              {role==="host" && <HostMenu/>}
+              {role==="admin" && <AdminMenu/>}
             </nav>
           </div>
         </div>
@@ -126,18 +100,12 @@ const Sidebar = () => {
           <hr />
 
           {/* Profile Menu */}
-          <NavLink
-            to="/dashboard/profile"
-            className={({ isActive }) =>
-              `flex items-center px-4 py-2 my-5  transition-colors duration-300 transform  hover:bg-gray-300   hover:text-gray-700 ${
-                isActive ? "bg-gray-300  text-gray-700" : "text-gray-600"
-              }`
-            }
-          >
-            <FcSettings className="w-5 h-5" />
+          <MenuItem
+            address={`/dashboard/profile`}
+            label={"Profile"}
+            icon={FcSettings}
+          />
 
-            <span className="mx-4 font-medium">Profile</span>
-          </NavLink>
           <button
             onClick={logOut}
             className="flex w-full items-center px-4 py-2 mt-5 text-gray-600 hover:bg-gray-300   hover:text-gray-700 transition-colors duration-300 transform"

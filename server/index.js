@@ -22,13 +22,11 @@ app.use(cookieParser());
 // Verify Token Middleware
 const verifyToken = async (req, res, next) => {
   const token = req.cookies?.token;
-  console.log(token);
   if (!token) {
     return res.status(401).send({ message: "unauthorized access" });
   }
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
     if (err) {
-      console.log(err);
       return res.status(401).send({ message: "unauthorized access" });
     }
     req.user = decoded;
@@ -48,6 +46,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     const roomsCollection = client.db("WanderStay_db").collection("rooms");
+    const usersCollection = client.db("WanderStay_db").collection("users");
     // auth related api
     app.post("/jwt", async (req, res) => {
       const user = req.body;
@@ -86,7 +85,6 @@ async function run() {
       let options = {};
       if (sort === "asc-p") {
         options = { price: "-1" };
-        console.log("entered");
       } else if (sort === "desc-p") {
         options = { price: "1" };
       } else if (sort === "asc-r") {
@@ -139,6 +137,69 @@ async function run() {
     app.post("/rooms", async (req, res) => {
       const room = req?.body;
       const result = await roomsCollection.insertOne(room);
+      res.send(result);
+    });
+
+    // users
+    app.get("/users", async (req, res) => {
+      const result = await usersCollection.find().toArray();
+      res.send(result);
+    });
+
+    app.get('/user/:email', async(req,res)=>{
+      const email=req?.params?.email;
+
+      const result=await usersCollection.findOne({email});
+      res.send(result);
+    })
+
+    app.put("/users", async (req, res) => {
+      const user = req?.body;
+      // console.log(user);
+
+      const query = { email: user?.email };
+      const options = { upsert: true };
+      const userFound = await usersCollection.findOne(query);
+      if (userFound) {
+        if (user?.status === "Requested") {
+          const updatedUser = await usersCollection.updateOne(query, {
+            $set: { status: user?.status },
+          });
+          return res.send(updatedUser);
+        } else {
+          return res.send(userFound);
+        }
+      }
+
+      const updatedDoc = {
+        $set: {
+          ...user,
+          timeStamp: Date.now(),
+        },
+      };
+
+      const result = await usersCollection.updateOne(
+        query,
+        updatedDoc,
+        options
+      );
+
+      return res.send(result);
+    });
+
+    app.patch(`/update-user-role/:email`, async (req, res) => {
+      const email = req?.params?.email;
+
+      const updatedUser = req?.body;
+      const updatedDoc = {
+        $set: {
+          role: updatedUser?.role,
+          status: updatedUser?.status,
+          timeStamp: Date.now(),
+        },
+      };
+
+      const result = await usersCollection.updateOne({ email }, updatedDoc);
       res.send(result);
     });
 

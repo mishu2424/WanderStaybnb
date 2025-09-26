@@ -1,14 +1,15 @@
-// import { Helmet } from "react-helmet-async";
-// import useRole from "../../../../hooks/useRole";
+import { Helmet } from "react-helmet-async";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { ImageBBUpload } from "../api/utilities";
 import LoadingSpinner from "./shared/LoadingSpinner";
 import useAuth from "../hooks/useAuth";
 import UpdateProfileModal from "./Modal/UpdateProfileModal";
+import useRole from "../hooks/useRole";
 
 const Profile = () => {
   const { user, loading, setLoading, updateUserProfile } = useAuth() || {};
+  const [role]=useRole();
 
   console.log(user);
   // const [role, isLoading] = useRole();
@@ -37,9 +38,9 @@ const Profile = () => {
   if (loading) return <LoadingSpinner />;
   return (
     <div className="flex justify-center items-center h-screen">
-      {/* <Helmet>
-        <title>Profile</title>
-      </Helmet> */}
+      <Helmet>
+        <title>Dashboard|Profile</title>
+      </Helmet>
       <div className="bg-white shadow-lg rounded-2xl w-3/5">
         <img
           alt="profile"
@@ -56,7 +57,7 @@ const Profile = () => {
           </a>
 
           <p className="p-2 px-4 text-xs text-white bg-pink-500 rounded-full">
-            {/* {role?.split("")[0].toUpperCase() + role?.slice(1).toLowerCase()} */}
+            {role?.split("")[0].toUpperCase() + role?.slice(1).toLowerCase()}
           </p>
           <p className="mt-2 text-xl font-medium text-gray-800 ">
             User Id: {user?.uid}

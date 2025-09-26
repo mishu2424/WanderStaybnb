@@ -5,9 +5,39 @@ import { useEffect, useState } from "react";
 import moment from "moment/moment";
 import avatarImg from "../../../assets/images/placeholder.jpg";
 import useAuth from "../../../hooks/useAuth";
+import HostModal from "../../Modal/HostModal";
+import toast from "react-hot-toast";
+import useAxiosSecure from "../../../hooks/useAxiosSecure";
 const Navbar = ({ path }) => {
   const { user, logOut, theme, setTheme } = useAuth();
   const [time, setTime] = useState(null);
+  const axiosSecure=useAxiosSecure();
+  const [isOpen, setIsOpen]=useState(false);
+
+  const closeModal=()=>{
+    setIsOpen(false);
+  }
+
+  const handleHostRequest=async()=>{
+    try{
+      const newUser={
+        email:user?.email,
+        name:user?.displayName,
+        role:"guest",
+        status:"Requested",
+      }
+      const {data}=await axiosSecure.put('/users',newUser);
+      if(data.modifiedCount>0){
+        return toast.success('Host request has been sent!')
+      }else{
+        return toast.success("Request had already been made! Please wait for admin approval!");
+      }
+    }catch(err){
+      toast.error(err.message);
+    }finally{
+      closeModal();
+    }
+  }
 
   useEffect(() => {
     const LTheme = localStorage.getItem("theme");
@@ -40,8 +70,8 @@ const Navbar = ({ path }) => {
   }, []);
 
   return (
-    <div className="navbar bg-white shadow-sm px-4 text-white">
-      <div className="flex-1 flex items-center gap-3">
+    <div className="navbar bg-white shadow-sm px-4 text-white flex items-center justify-between">
+      <div className="flex items-center gap-3">
         <div className="flex gap-2 items-center">
           <Link to={"/"}>
             <img className="w-auto h-12" src={logo} alt="" />
@@ -105,6 +135,18 @@ const Navbar = ({ path }) => {
           )}
         </div>
       </div>
+      <div className="hidden md:block">
+        {/* {!user && ( */}
+        <button
+          // disabled={!user}
+          onClick={() => setIsOpen(true)}
+          className="disabled:cursor-not-allowed text-green-800 cursor-pointer bg-green-100 py-3 px-4 text-sm font-semibold rounded-full  transition"
+        >
+          Host your home
+        </button>
+        {/* )} */}
+      </div>
+      <HostModal isOpen={isOpen} closeModal={closeModal} handleHostRequest={handleHostRequest}/>
       <div className="flex-none">
         <ul className="menu menu-horizontal px-1 text-green-800 font-semibold">
           <li>

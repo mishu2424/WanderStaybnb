@@ -14,6 +14,7 @@ import {
 import { app } from '../firebase/firebase.config'
 import axios from 'axios'
 import { AuthContext } from '../Contexts/AuthContext'
+import toast from 'react-hot-toast'
 
 const auth = getAuth(app)
 const googleProvider = new GoogleAuthProvider()
@@ -67,12 +68,28 @@ const AuthProvider = ({ children }) => {
     return data
   }
 
+  const saveUser=async (user)=>{
+    const newUser={
+      email:user?.email,
+      name:user?.displayName,
+      status:"Verified",
+      role:'guest'
+    };
+
+    try{
+      await axios.put(`${import.meta.env.VITE_API_URL}/users`,newUser);
+    }catch(err){
+      toast.error('Something went wrong while saving the user information.',err.message);
+    }
+  }
+
   // onAuthStateChange
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, currentUser => {
       setUser(currentUser)
       if (currentUser) {
-        getToken(currentUser.email)
+        getToken(currentUser.email);
+        saveUser(currentUser);
       }
       setLoading(false)
     })
