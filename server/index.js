@@ -63,6 +63,33 @@ async function run() {
         .send({ success: true });
     });
 
+    const verifyAdmin = async (req, res, next) => {
+      const user = req?.user;
+      const query = { email: user?.email };
+      const result = await usersCollection.findOne(query);
+      if (!result || result.role !== "admin")
+        return res.status(403).send({ message: "forbidden access" });
+      next();
+    };
+
+    const verifyHost = async (req, res, next) => {
+      const user = req?.user;
+      const query = { email: user?.email };
+      const result = await usersCollection.findOne(query);
+      if (!result || result.role !== "host")
+        return res.status(403).send({ message: "forbidden access" });
+      next();
+    };
+
+    const verifyAdminOrHost = async (req, res, next) => {
+      const user = req?.user;
+      const query = { email: user?.email };
+      const result = await usersCollection.findOne(query);
+      if (!result || result.role === "guest")
+        return res.status(403).send({ message: "forbidden access" });
+      next();
+    };
+
     app.get("/rooms", async (req, res) => {
       const page = parseInt(req?.query?.page) || 1;
       const limit = parseInt(req?.query?.limit) || 10;
@@ -135,40 +162,47 @@ async function run() {
       res.send(result);
     });
 
-    app.post("/rooms", async (req, res) => {
+    app.post("/rooms", verifyToken, verifyHost, async (req, res) => {
       const room = req?.body;
       const result = await roomsCollection.insertOne(room);
       res.send(result);
     });
 
-    app.patch(`/update-room/:id`,async(req,res)=>{
-      const id=req?.params?.id;
-      const room=req?.body;
-      console.log('id',id,'room',room);
-      const query={_id:new ObjectId(id)};
-      const updatedDoc={
-        $set:{
+    app.patch(`/update-room/:id`, verifyToken, verifyHost, async (req, res) => {
+      const id = req?.params?.id;
+      const room = req?.body;
+      console.log("id", id, "room", room);
+      const query = { _id: new ObjectId(id) };
+      const updatedDoc = {
+        $set: {
           ...room,
-          roomUpdatedTimeStamp:Date.now(),
-        }
-      }
-      const result=await roomsCollection.updateOne(query,updatedDoc);
+          roomUpdatedTimeStamp: Date.now(),
+        },
+      };
+      const result = await roomsCollection.updateOne(query, updatedDoc);
       res.send(result);
-    })
+    });
 
-    app.delete(`/room-delete/:id`, async(req,res)=>{
-      const id=req?.params?.id;
-      console.log(id);
-      const result=await roomsCollection.deleteOne({_id:new ObjectId(id)});
-      res.send(result);
-    })
+    app.delete(
+      `/room-delete/:id`,
+      verifyToken,
+      verifyAdminOrHost,
+      async (req, res) => {
+        const id = req?.params?.id;
+        console.log(id);
+        const result = await roomsCollection.deleteOne({
+          _id: new ObjectId(id),
+        });
+        res.send(result);
+      }
+    );
     // users
-    app.get("/users", async (req, res) => {
+    app.get("/users", verifyToken, verifyAdmin, async (req, res) => {
       const result = await usersCollection.find().toArray();
       res.send(result);
     });
 
-    app.get("/user/:email", async (req, res) => {
+    app.get("/user/:email", verifyToken, async (req, res) => {
       const email = req?.params?.email;
 
       const result = await usersCollection.findOne({ email });
@@ -209,59 +243,75 @@ async function run() {
       return res.send(result);
     });
 
-    app.patch(`/update-user-role/:email`, async (req, res) => {
-      const email = req?.params?.email;
+    app.patch(
+      `/update-user-role/:email`,
+      verifyToken,
+      verifyHost,
+      async (req, res) => {
+        const email = req?.params?.email;
 
-      const updatedUser = req?.body;
-      const updatedDoc = {
-        $set: {
-          role: updatedUser?.role,
-          status: updatedUser?.status,
-          timeStamp: Date.now(),
-        },
-      };
+        const updatedUser = req?.body;
+        const updatedDoc = {
+          $set: {
+            role: updatedUser?.role,
+            status: updatedUser?.status,
+            timeStamp: Date.now(),
+          },
+        };
 
-      const result = await usersCollection.updateOne({ email }, updatedDoc);
-      res.send(result);
-    });
+        const result = await usersCollection.updateOne({ email }, updatedDoc);
+        res.send(result);
+      }
+    );
 
     // booking
-    app.get(`/bookings/:email`, async (req, res) => {
+    app.get(`/bookings/:email`, verifyToken, async (req, res) => {
       const email = req?.params?.email;
       const query = { "guest.email": email };
       const result = await bookingCollection.find(query).toArray();
       res.send(result);
     });
 
-    app.get(`/manage-bookings/:email`, async (req, res) => {
-      const email = req?.params?.email;
-      const query = { "host.email": email };
-      const result = await bookingCollection.find(query).toArray();
-      res.send(result);
-    });
+    app.get(
+      `/manage-bookings/:email`,
+      verifyToken,
+      verifyHost,
+      async (req, res) => {
+        const email = req?.params?.email;
+        const query = { "host.email": email };
+        const result = await bookingCollection.find(query).toArray();
+        res.send(result);
+      }
+    );
 
-    app.post("/booking", async (req, res) => {
+    app.post("/booking", verifyToken, verifyHost, async (req, res) => {
       const booking = req?.body;
       const result = await bookingCollection.insertOne(booking);
       res.send(result);
     });
 
-    app.patch("/update-room-status/:id", async (req, res) => {
-      const id = req?.params?.id;
-      const { status } = req?.body;
+    app.patch(
+      "/update-room-status/:id",
+      verifyToken,
+      verifyHost,
+      async (req, res) => {
+        const id = req?.params?.id;
+        const { status } = req?.body;
 
-      const query = { _id: new ObjectId(id) };
-      const updatedDoc = {
-        $set: {
-          booked: status,
-        },
-      };
-      const result = await roomsCollection.updateOne(query, updatedDoc);
-      res.send(result);
-    });
+        const query = { _id: new ObjectId(id) };
+        const updatedDoc = {
+          $set: {
+            booked: status,
+          },
+        };
+        const result = await roomsCollection.updateOne(query, updatedDoc);
+        res.send(result);
+      }
+    );
 
     // my-listings
-    app.get(`/listings/:email`, async (req, res) => {
+    app.get(`/listings/:email`,verifyToken,
+      verifyHost, async (req, res) => {
       const email = req?.params?.email;
       const query = { "host.email": email };
       console.log(query);

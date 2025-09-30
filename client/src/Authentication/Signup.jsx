@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import companyLogo from "../assets/images/wanderstay.png";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
@@ -6,8 +6,21 @@ import useAuth from "../hooks/useAuth";
 import toast from "react-hot-toast";
 import { ImSpinner3 } from "react-icons/im";
 import { ImageBBUpload } from "../api/utilities";
+import { IoEye, IoEyeOffSharp } from "react-icons/io5";
+import {
+  LoadCanvasTemplate,
+  loadCaptchaEnginge, // 👈 correct spelling
+  validateCaptcha,
+} from "react-simple-captcha";
+import * as RSC from "react-simple-captcha";
 
 const Signup = () => {
+  const [passToggle, setPassToggle] = useState(false);
+  //   const [confirmPassToggle, seConfirmPassToggle] = useState(false);
+  const [passError, setPassError] = useState(false);
+  const captchaRef = useRef(null);
+  const [imageFile, setImageFile] = useState();
+
   const {
     loading,
     setLoading,
@@ -20,28 +33,48 @@ const Signup = () => {
   const [imgVal, setImgVal] = useState("Profile Photo");
   const from = location?.state || "/";
 
+  useEffect(() => {
+    loadCaptchaEnginge(6);
+  }, []);
+
+  const handleImagePreview = (image) => {
+    setImageFile(URL.createObjectURL(image));
+  };
+
   // email&password authentication
   const handleSignIn = async (e) => {
     e.preventDefault();
     const form = new FormData(e.target);
     const email = form.get("email");
     const password = form.get("password");
+    const user_captcha = form.get("user_captcha");
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(password)) {
+      // console.log('entered')
+      setPassError(true);
+      return;
+    }
     const confirmPassword = form.get("confirmPassword");
     const name = form.get("name");
     const photoURL = form.get("photoURL");
-    console.log(photoURL);
-    try {
-      setLoading(true);
-      if (password !== confirmPassword) return toast.error("Passwords did not match!");
-      const img=await ImageBBUpload(photoURL);
-      await createUser(email, password);
-      await updateUserProfile(name, img);
-      toast.success("Signed up successfully!");
-      navigate(from);
-    } catch (err) {
-      toast.error(err.message);
-    } finally {
-      setLoading(false);
+    if (validateCaptcha(user_captcha, false)) {
+      try {
+        setLoading(true);
+        if (password !== confirmPassword)
+          return toast.error("Passwords did not match!");
+        const img = await ImageBBUpload(photoURL);
+        await createUser(email, password);
+        await updateUserProfile(name, img);
+        toast.success("Signed up successfully!");
+        navigate(from);
+      } catch (err) {
+        toast.error(err.message);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      return toast.error("Captcha Does Not Match");
     }
   };
 
@@ -120,18 +153,28 @@ const Signup = () => {
 
             <h2 className="mx-3 text-gray-400">{imgVal}</h2>
 
-            <input
-              required
-              name="photoURL"
-              type="file"
-              className="hidden"
-              id="dropzone-file"
-              accept="image/*"
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                setImgVal(file ? file.name : "Profile Photo");
-              }}
-            />
+            <div>
+              <input
+                required
+                name="photoURL"
+                type="file"
+                className="hidden"
+                id="dropzone-file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  setImgVal(file ? file.name : "Profile Photo");
+                  handleImagePreview(e.target.files[0]);
+                }}
+              />
+              {imageFile && (
+                <img
+                  className="w-8 h-8 object-cover"
+                  src={imageFile}
+                  alt="user-photo"
+                />
+              )}
+            </div>
           </label>
 
           <div className="relative flex items-center mt-6">
@@ -179,12 +222,47 @@ const Signup = () => {
             </span>
 
             <input
-              type="password"
-              className="block w-full px-10 py-3 text-gray-700 bg-white border rounded-lg dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+              type={`${passToggle ? "text" : "password"}`}
+              className="relative block w-full px-10 py-3 text-gray-700 bg-white border rounded-lg dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
               placeholder="Password"
               name="password"
             />
+            {passToggle ? (
+              <IoEyeOffSharp
+                onClick={() => setPassToggle(!passToggle)}
+                className="absolute top-4 right-3 cursor-pointer"
+                size={16}
+              />
+            ) : (
+              <IoEye
+                onClick={() => setPassToggle(!passToggle)}
+                className="absolute top-4 right-3 cursor-pointer"
+                size={16}
+              />
+            )}
           </div>
+          {passError && (
+            <div>
+              <ul className="list-disc pl-5 text-red-500">
+                <li>
+                  At least <strong>8</strong> characters
+                </li>
+                <li>
+                  Must contain <strong>1 uppercase letter (A-Z)</strong>
+                </li>
+                <li>
+                  Must contain <strong>1 lowercase letter (a-z)</strong>
+                </li>
+                <li>
+                  Must contain <strong>1 number (0-9)</strong>
+                </li>
+                <li>
+                  Must contain <strong>1 special character</strong> (@ $ ! % * ?
+                  &)
+                </li>
+              </ul>
+            </div>
+          )}
 
           <div className="relative flex items-center mt-4">
             <span className="absolute">
@@ -214,7 +292,11 @@ const Signup = () => {
 
           <div className="mt-6">
             <button className="w-full px-6 py-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-green-800 rounded-lg hover:bg-white hover:text-green-800 border hover:border-green-800 cursor-pointer focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50">
-              {loading ? <ImSpinner3 className="animate-spin m-auto"/> : "Sign up"}
+              {loading ? (
+                <ImSpinner3 className="animate-spin m-auto" />
+              ) : (
+                "Sign up"
+              )}
             </button>
 
             <div className="flex items-center justify-between mt-4">
@@ -227,6 +309,20 @@ const Signup = () => {
               <span className="w-1/5 border-b dark:border-gray-400 lg:w-1/5"></span>
             </div>
 
+            <div className="relative mt-4">
+              <label className="label">
+                <LoadCanvasTemplate reloadText="Reload Captcha" />
+              </label>
+              <input
+                ref={captchaRef}
+                type="text"
+                name="user_captcha"
+                className="block w-full px-10 py-3 text-gray-700 bg-white border rounded-lg dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                placeholder="Write the text above"
+                required
+              />
+            </div>
+
             <div className="flex items-center mt-6 -mx-2">
               <button
                 onClick={handleGoogleSignIn}
@@ -236,7 +332,11 @@ const Signup = () => {
                 <FcGoogle />
 
                 <span className="hidden mx-2 sm:inline">
-                  {loading ? <ImSpinner3 className="animate-spin m-auto"/> : "Sign up with Google"}
+                  {loading ? (
+                    <ImSpinner3 className="animate-spin m-auto" />
+                  ) : (
+                    "Sign up with Google"
+                  )}
                 </span>
               </button>
             </div>
