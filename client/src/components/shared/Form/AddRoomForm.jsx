@@ -252,7 +252,11 @@ const AddRoomForm = ({
           onChange={(e) => handleImagePreview(e.target.files[0])}
         />
         {imageFile && (
-          <img className="w-8 h-8 rounded-full" src={imageFile} alt="Uploaded preview" />
+          <img
+            className="w-8 h-8 rounded-full"
+            src={imageFile}
+            alt="Uploaded preview"
+          />
         )}
       </div>
       {/* <div className="bg-rose-500 text-white border border-gray-300 rounded font-semibold cursor-pointer p-1 px-3 hover:bg-rose-500">
@@ -263,11 +267,13 @@ const AddRoomForm = ({
           : imageText}
       </div> */}
       <input
+        autoComplete="flexible"
         name="cancellation_policy"
         placeholder="Cancellation Policy"
         className="border border-gray-300 p-2 rounded"
       />
       <input
+        autoComplete="24 hours"
         name="cancellation_before"
         placeholder="Cancellation Before (e.g., 24 hours)"
         className="border border-gray-300 p-2 rounded"
@@ -279,9 +285,13 @@ const AddRoomForm = ({
       />
       <button
         type="submit"
-        className="bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800"
+        className="bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800 cursor-pointer"
       >
-        {loading ? <TbFidgetSpinner className="animate-spin m-auto"/> : "Add Room"}
+        {loading ? (
+          <TbFidgetSpinner className="animate-spin m-auto" />
+        ) : (
+          "Add Room"
+        )}
       </button>
     </form>
   );

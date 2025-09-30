@@ -141,6 +141,27 @@ async function run() {
       res.send(result);
     });
 
+    app.patch(`/update-room/:id`,async(req,res)=>{
+      const id=req?.params?.id;
+      const room=req?.body;
+      console.log('id',id,'room',room);
+      const query={_id:new ObjectId(id)};
+      const updatedDoc={
+        $set:{
+          ...room,
+          roomUpdatedTimeStamp:Date.now(),
+        }
+      }
+      const result=await roomsCollection.updateOne(query,updatedDoc);
+      res.send(result);
+    })
+
+    app.delete(`/room-delete/:id`, async(req,res)=>{
+      const id=req?.params?.id;
+      console.log(id);
+      const result=await roomsCollection.deleteOne({_id:new ObjectId(id)});
+      res.send(result);
+    })
     // users
     app.get("/users", async (req, res) => {
       const result = await usersCollection.find().toArray();
@@ -212,6 +233,13 @@ async function run() {
       res.send(result);
     });
 
+    app.get(`/manage-bookings/:email`, async (req, res) => {
+      const email = req?.params?.email;
+      const query = { "host.email": email };
+      const result = await bookingCollection.find(query).toArray();
+      res.send(result);
+    });
+
     app.post("/booking", async (req, res) => {
       const booking = req?.body;
       const result = await bookingCollection.insertOne(booking);
@@ -236,7 +264,8 @@ async function run() {
     app.get(`/listings/:email`, async (req, res) => {
       const email = req?.params?.email;
       const query = { "host.email": email };
-      const result = await bookingCollection.find(query).toArray();
+      console.log(query);
+      const result = await roomsCollection.find(query).toArray();
       res.send(result);
     });
 

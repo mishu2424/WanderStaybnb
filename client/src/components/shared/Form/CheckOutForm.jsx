@@ -47,7 +47,7 @@ const CheckOutForm = ({ closeModal, bookingInfo }) => {
   const handleBookings = async (e) => {
     e.preventDefault();
     if (bookingInfo?.host?.email === user?.email) {
-      return toast.error("You can not book tour own room!");
+      return toast.error("You can not book your own room!");
     }
     const booking = {
       ...bookingInfo,

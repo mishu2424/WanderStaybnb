@@ -1,10 +1,18 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 import PropTypes from "prop-types";
+import UpdateProfileForm from "../shared/Form/UpdateProfileForm";
 // import UpdateProfileForm from "../Form/UpdateProfileForm";
 
-const UpdateProfileModal = ({ isOpen, setIsOpen, handleUpdateProfile }) => {
-  console.log(isOpen, setIsOpen);
+const UpdateProfileModal = ({
+  isOpen,
+  setIsOpen,
+  handleUpdateProfile,
+  handleImagePreview,
+  imageFile,
+  imageText,
+}) => {
+  // console.log(isOpen, setIsOpen);
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog
@@ -42,9 +50,14 @@ const UpdateProfileModal = ({ isOpen, setIsOpen, handleUpdateProfile }) => {
                 >
                   Update User Modal
                 </Dialog.Title>
-                {/* <div className="mt-2">
-                  <UpdateProfileForm handleUpdateProfile={handleUpdateProfile}/>
-                </div> */}
+                <div className="mt-2">
+                  <UpdateProfileForm
+                    handleUpdateProfile={handleUpdateProfile}
+                    handleImagePreview={handleImagePreview}
+                    imageFile={imageFile}
+                    imageText={imageText}
+                  />
+                </div>
 
                 <div className="mt-4">
                   <button

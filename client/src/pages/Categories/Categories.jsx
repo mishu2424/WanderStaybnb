@@ -103,10 +103,13 @@ const Categories = () => {
               handleCategoryChange={handleCategoryChange}
               label={item.label}
               icon={item.icon}
+              category={category}
             />
           ))}
         </div>
+
         <Rooms rooms={rooms} />
+
         <CategoryButtons
           setCurrentPage={setCurrentPage}
           currentPage={currentPage}
