@@ -1,4 +1,4 @@
-import { BsFingerprint } from "react-icons/bs";
+import { BsFingerprint, BsGraphUp } from "react-icons/bs";
 import { GrUserAdmin } from "react-icons/gr";
 import MenuItem from "./MenuItem";
 import HostModal from "../../Modal/HostModal";
@@ -46,6 +46,12 @@ const GuestMenu = () => {
   if (isLoading) return <LoadingSpinner />;
   return (
     <>
+      {/* Statistics */}
+      <MenuItem
+        address={`/dashboard/guest-stats`}
+        label={"Statistics"}
+        icon={BsGraphUp}
+      />
       <MenuItem
         icon={BsFingerprint}
         label="My Bookings"

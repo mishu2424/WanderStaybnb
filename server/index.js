@@ -27,6 +27,8 @@ const verifyToken = async (req, res, next) => {
   }
   jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded) => {
     if (err) {
+      console.log("Problem here 2");
+
       return res.status(401).send({ message: "unauthorized access" });
     }
     req.user = decoded;
@@ -48,6 +50,9 @@ async function run() {
     const roomsCollection = client.db("WanderStay_db").collection("rooms");
     const usersCollection = client.db("WanderStay_db").collection("users");
     const bookingCollection = client.db("WanderStay_db").collection("bookings");
+    const bookMarksCollection = client
+      .db("WanderStay_db")
+      .collection("bookmarks");
     // auth related api
     app.post("/jwt", async (req, res) => {
       const user = req.body;
@@ -91,6 +96,12 @@ async function run() {
     };
 
     app.get("/rooms", async (req, res) => {
+      const popular=req?.query?.popular;
+      console.log(popular);
+      if(popular){
+        const popularRooms=await roomsCollection.find({popular}).toArray();
+        return res.send(popularRooms);
+      }
       const page = parseInt(req?.query?.page) || 1;
       const limit = parseInt(req?.query?.limit) || 10;
       const skip = (page - 1) * limit;
@@ -204,6 +215,7 @@ async function run() {
 
     app.get("/user/:email", verifyToken, async (req, res) => {
       const email = req?.params?.email;
+      // console.log('role',email);
 
       const result = await usersCollection.findOne({ email });
       res.send(result);
@@ -310,8 +322,7 @@ async function run() {
     );
 
     // my-listings
-    app.get(`/listings/:email`,verifyToken,
-      verifyHost, async (req, res) => {
+    app.get(`/listings/:email`, verifyToken, verifyHost, async (req, res) => {
       const email = req?.params?.email;
       const query = { "host.email": email };
       console.log(query);
@@ -333,6 +344,172 @@ async function run() {
       } catch (err) {
         res.status(500).send(err);
       }
+    });
+
+    // bookmarks
+    app.get(`/bookmarks/:email/:roomId`, verifyToken, async (req, res) => {
+      const email = req?.params?.email;
+      const roomId = req?.params?.roomId;
+      console.log(email, roomId);
+      const query = { "guest.email": email, roomId: roomId };
+      const result = await bookMarksCollection.findOne(query);
+      console.log(result);
+      res.send(result);
+    });
+
+    app.post("/bookmarks", async (req, res) => {
+      const bookmarkedRoom = req?.body;
+      const result = await bookMarksCollection.insertOne(bookmarkedRoom);
+      res.send(result);
+    });
+
+    app.delete("/bookmarks/:id", async (req, res) => {
+      const { id } = req?.params;
+      const query = { roomId: id };
+      const result = await bookMarksCollection.deleteOne(query);
+      res.send(result);
+    });
+
+    // stats
+    // guest-stats
+    app.get("/guest-stats", verifyToken, async (req, res) => {
+      const { email } = req?.user;
+      const bookings = await bookingCollection
+        .find(
+          { "guest.email": email },
+          {
+            projection: {
+              date: 1,
+              price: 1,
+            },
+          }
+        )
+        .toArray();
+
+      const { timeStamp } = await usersCollection.findOne(
+        { email },
+        {
+          projection: {
+            timeStamp: 1,
+          },
+        }
+      );
+
+      const chartData = bookings?.map((booking) => {
+        const day = new Date(booking?.date).getDate();
+        const month = new Date(booking?.date).getMonth() + 1;
+        const data = [`${day}/${month}`, Number(booking?.price)];
+        return data;
+      });
+
+      chartData.unshift(["Day", "Sales"]);
+
+      const totalSales = bookings.reduce(
+        (sum, booking) => sum + Number(booking?.price),
+        0
+      );
+
+      res.send({
+        totalBookings: bookings?.length,
+        timeStamp,
+        totalSales,
+        chartData,
+      });
+    });
+
+    // host-stats
+    app.get("/host-stats", verifyToken, async (req, res) => {
+      const { email } = req?.user;
+      const bookings = await bookingCollection
+        .find(
+          { "host.email": email },
+          {
+            projection: {
+              date: 1,
+              price: 1,
+            },
+          }
+        )
+        .toArray();
+
+      const totalRooms = await roomsCollection.countDocuments({
+        "host.email": email,
+      });
+
+      const { timeStamp } = await usersCollection.findOne(
+        { email },
+        {
+          projection: {
+            timeStamp: 1,
+          },
+        }
+      );
+
+      const totalSales = bookings.reduce(
+        (sum, booking) => sum + Number(booking?.price),
+        0
+      );
+
+      const chartData = bookings.map((booking) => {
+        const day = new Date(booking?.date).getDate();
+        const month = new Date(booking?.date).getMonth() + 1;
+        const data = [`${day}/${month}`, Number(booking?.price)];
+        return data;
+      });
+
+      res.send({
+        totalBookings: bookings.length,
+        totalSales,
+        totalRooms,
+        timeStamp,
+        chartData,
+      });
+    });
+
+    // admin-stats
+    app.get("/admin-stats", verifyToken, async (req, res) => {
+      const { email } = req?.user;
+      const bookings = await bookingCollection
+        .find({
+          projection: {
+            date: 1,
+            price: 1,
+          },
+        })
+        .toArray();
+      const totalRooms = await roomsCollection.countDocuments();
+
+      const { timeStamp } = await usersCollection.findOne(
+        { email },
+        {
+          projection: {
+            timeStamp: 1,
+          },
+        }
+      );
+
+      const totalUsers = await usersCollection.countDocuments();
+
+      const totalSales = bookings.reduce(
+        (sum, booking) => sum + Number(booking?.price),
+        0
+      );
+
+      const chartData = bookings.map((booking) => {
+        const day = new Date(booking?.date).getDate();
+        const month = new Date(booking?.date).getMonth() + 1;
+        const data = [`${day}/${month}`, Number(booking?.price)];
+        return data;
+      });
+
+      res.send({
+        totalBookings: bookings.length,
+        totalSales,
+        totalRooms,
+        timeStamp,
+        totalUsers,
+        chartData,
+      });
     });
 
     // Send a ping to confirm a successful connection

@@ -51,6 +51,7 @@ const CheckOutForm = ({ closeModal, bookingInfo }) => {
     }
     const booking = {
       ...bookingInfo,
+      date:new Date(),
       guest: {
         email: user?.email,
         name: user?.displayName,

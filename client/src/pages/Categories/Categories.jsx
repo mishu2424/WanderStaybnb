@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import LoadingSpinner from "../../components/shared/LoadingSpinner";
 import CategoryButtons from "./CategoryButtons";
+import { destroy } from "splash-screen";
 const Categories = () => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
@@ -23,6 +24,7 @@ const Categories = () => {
     const { data } = await axiosCommon(
       `/rooms?page=${currentPage}&limit=${itemsPerPage}&category=${category}&search=${searchText}&sort=${sortText}`
     );
+    destroy();
     return data;
   };
 
@@ -42,7 +44,7 @@ const Categories = () => {
     getCount();
   }, [category, searchText]);
 
-  console.log(searchText, rooms);
+  // console.log(searchText, rooms);
 
   const handleCategoryChange = (label) => {
     setCurrentPage(1);

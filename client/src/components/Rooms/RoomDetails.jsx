@@ -21,7 +21,7 @@ import {
   //   FaShareAlt,
 } from "react-icons/fa6";
 import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import LoadingSpinner from "../shared/LoadingSpinner";
 import Fact from "./Fact";
 import {
@@ -38,6 +38,11 @@ import Container from "../shared/Container";
 import { useState } from "react";
 import useAxiosCommon from "../../hooks/useAxiosCommon";
 import useAuth from "../../hooks/useAuth";
+import toast from "react-hot-toast";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
+import useBookmarks from "../../hooks/useBookmarks";
+import { destroy } from "splash-screen";
+import { useEffect } from "react";
 
 const amenityIcon = (name) => {
   const n = name.toLowerCase();
@@ -57,12 +62,11 @@ const amenityIcon = (name) => {
 
 export default function RoomDetailsCard() {
   const { user, loading } = useAuth();
-  const [bookmarked, setBookmarked] = useState(false);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const { theme } = useAuth();
   const { id } = useParams();
   const axiosCommon = useAxiosCommon();
-
+  const axiosSecure = useAxiosSecure();
 
   const closeModal = () => {
     setIsBookingModalOpen(false);
@@ -76,11 +80,66 @@ export default function RoomDetailsCard() {
     queryKey: ["room", id],
     queryFn: async () => {
       const res = await axiosCommon(`room/${id}`);
+      destroy();
       return res.data;
     },
   });
 
-  if (isLoading||loading) return <LoadingSpinner />;
+  const { mutateAsync: mutateBookMark } = useMutation({
+    mutationKey: ["bookmarked-room"],
+    mutationFn: async (bookmarkedRoom) => {
+      const { data } = await axiosSecure.post("/bookmarks", bookmarkedRoom);
+      return data;
+    },
+  });
+
+  const { mutateAsync: deleteBookMark } = useMutation({
+    mutationKey: ["remove-bookmarked-room"],
+    mutationFn: async (id) => {
+      const { data } = await axiosSecure.delete(`/bookmarks/${id}`);
+      return data;
+    },
+  });
+
+  const handleBookMarks = async () => {
+    if (!bookmarked) {
+      const guest = {
+        email: user?.email,
+        name: user?.displayName,
+        photoURL: user?.photoURL,
+      };
+      const bookmarkedRoom = {
+        ...room,
+        roomId: room?._id,
+        bookmarked:true,
+        guest,
+      };
+      delete bookmarkedRoom?._id;
+      try {
+        await mutateBookMark(bookmarkedRoom);
+        toast.success(`This room has been booked`);
+        setBookmarked(true);
+      } catch (err) {
+        toast.error(err.message);
+      }
+    } else {
+      await deleteBookMark(room?._id);
+      // console.log(room?._id);
+      toast.success("Bookmark has been removed");
+      setBookmarked(false);
+    }
+  };
+
+  // console.log('room id',room?._id);
+  const [isBookMarked,bookMarkLoading] =useBookmarks(room?._id);
+  const [bookmarked, setBookmarked] = useState(isBookMarked);
+  useEffect(()=>{
+    setBookmarked(isBookMarked);
+  },[isBookMarked])
+  // console.log(bookmarked);
+
+  if (isLoading || loading || bookMarkLoading) return <LoadingSpinner />;
+
   const {
     location,
     category,
@@ -133,6 +192,7 @@ export default function RoomDetailsCard() {
           </div>
           <div className="flex items-center gap-2 ">
             <button
+              onClick={handleBookMarks}
               type="button"
               className="p-2 rounded-full bg-transparent border border-transparent group hover:bg-white"
               title="Save"
@@ -145,7 +205,7 @@ export default function RoomDetailsCard() {
                   viewBox="0 0 24 24"
                   fill="currentColor"
                   className="z-50 w-6 h-6 text-red-500 cursor-pointer group-hover:text-red-500"
-                  onClick={() => setBookmarked(false)}
+                  // onClick={() => setBookmarked(false)}
                 >
                   <path d="m11.645 20.91-.007-.003-.022-.012a15.247 15.247 0 0 1-.383-.218 25.18 25.18 0 0 1-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0 1 12 5.052 5.5 5.5 0 0 1 16.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 0 1-4.244 3.17 15.247 15.247 0 0 1-.383.219l-.022.012-.007.004-.003.001a.752.752 0 0 1-.704 0l-.003-.001Z" />
                 </svg>
@@ -158,7 +218,7 @@ export default function RoomDetailsCard() {
                   strokeWidth={1.5}
                   stroke="currentColor"
                   className="z-50 w-6 h-6 text-white drop-shadow cursor-pointer group-hover:text-red-500"
-                  onClick={() => setBookmarked(true)}
+                  // onClick={() => setBookmarked(true)}
                 >
                   <path
                     strokeLinecap="round"

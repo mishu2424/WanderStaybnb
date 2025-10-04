@@ -83,12 +83,7 @@ const Sidebar = () => {
 
             {/*  Menu Items */}
             <nav>
-              {/* Statistics */}
-              <MenuItem
-                address={`/dashboard`}
-                label={"Statistics"}
-                icon={BsGraphUp}
-              />
+              
 
               {role === "guest" && <GuestMenu />}
               {role === "host" ? (

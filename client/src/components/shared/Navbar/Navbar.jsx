@@ -8,8 +8,10 @@ import useAuth from "../../../hooks/useAuth";
 import HostModal from "../../Modal/HostModal";
 import toast from "react-hot-toast";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import useRole from "../../../hooks/useRole";
 const Navbar = ({ path }) => {
-  const { user, logOut, theme, setTheme } = useAuth();
+  const { user, logOut, theme, setTheme } = useAuth()||{};
+  const [role]=useRole();
   const [time, setTime] = useState(null);
   const axiosSecure=useAxiosSecure();
   const [isOpen, setIsOpen]=useState(false);
@@ -136,7 +138,7 @@ const Navbar = ({ path }) => {
         </div>
       </div>
       <div className="hidden md:block">
-        {/* {!user && ( */}
+        {(user && role==='guest') && (
         <button
           disabled={!user}
           onClick={() => setIsOpen(true)}
@@ -144,7 +146,7 @@ const Navbar = ({ path }) => {
         >
           Host your home
         </button>
-        {/* )} */}
+        )}
       </div>
       <HostModal isOpen={isOpen} closeModal={closeModal} handleHostRequest={handleHostRequest}/>
       <div className="flex-none">

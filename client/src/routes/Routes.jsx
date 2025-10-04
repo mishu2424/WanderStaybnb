@@ -17,6 +17,9 @@ import HostRoute from "./HostRoute";
 import MyBookings from "../pages/Dashboard/Guest/MyBookings";
 import MyListings from "../pages/Dashboard/Host/MyListings";
 import ManageBookings from "../pages/Dashboard/Host/ManageBookings";
+import GuestStatistics from "../pages/Dashboard/Guest/GuestStatistics";
+import HostStatistics from "../pages/Dashboard/Host/HostStatistics";
+import AdminStatistics from "../pages/Dashboard/Admin/AdminStatistics";
 
 export const router = createBrowserRouter([
   {
@@ -60,15 +63,23 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Statistics />,
+        element: <Profile />,
       },
       // guest
+      {
+        path:'guest-stats',
+        element:<GuestStatistics/>
+      },
       {
         path:'my-bookings',
         element:<MyBookings/>,
       },
 
       // host
+      {
+        path:'host-stats',
+        element:<HostStatistics/>
+      },
       {
         path: "add-room",
         element: (
@@ -100,6 +111,10 @@ export const router = createBrowserRouter([
         ),
       },
       // admin
+      {
+        path:'admin-stats',
+        element:<AdminStatistics/>
+      },
       {
         path: "manage-users",
         element: (

@@ -6,12 +6,15 @@ import { useQuery } from "@tanstack/react-query";
 import Slider from "./Slider";
 import LoadingSpinner from "../LoadingSpinner";
 import useAxiosCommon from "../../../hooks/useAxiosCommon";
+import { destroy } from "splash-screen";
+
 const PopularRooms = () => {
   const axiosCommon = useAxiosCommon();
   const { data: rooms, isLoading } = useQuery({
     queryKey: ["popular-rooms"],
     queryFn: async () => {
-      const { data } = await axiosCommon("/rooms");
+      const { data } = await axiosCommon(`/rooms?popular=${true}`);
+      destroy();
       return data;
     },
   });
