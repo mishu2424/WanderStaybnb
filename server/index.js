@@ -50,6 +50,8 @@ async function run() {
     const roomsCollection = client.db("WanderStay_db").collection("rooms");
     const usersCollection = client.db("WanderStay_db").collection("users");
     const bookingCollection = client.db("WanderStay_db").collection("bookings");
+    const reviewCollection = client.db("WanderStay_db").collection("reviews");
+
     const bookMarksCollection = client
       .db("WanderStay_db")
       .collection("bookmarks");
@@ -511,6 +513,18 @@ async function run() {
         chartData,
       });
     });
+
+    // reviews
+    app.get(`/all-reviews`, async(req,res)=>{
+      const result=await reviewCollection.find({}).toArray();
+      res.send(result);
+    })
+
+    app.post(`/all-review`,async(req,res)=>{
+      const reviewData=req?.body;
+      const result=await reviewCollection.insertOne(reviewData);
+      res.send(result);
+    })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });

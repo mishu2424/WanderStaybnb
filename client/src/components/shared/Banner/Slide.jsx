@@ -11,7 +11,7 @@ const Slide = ({ bannerImg, btnText, bannerDescription }) => {
       bgImage={bannerImg}
       bgImageAlt={"banner image"}
       strength={200}
-      className="flex items-center justify-center px-6 py-4 mx-auto h-screen lg:h-[37.5rem] lg:py-16 bg-no-repeat bg-cover w-full"
+      className="flex items-center justify-center px-6 py-4 mx-auto h-screen lg:h-screen lg:py-16 bg-no-repeat bg-cover w-full"
     >
       {/* <div
       className="flex items-center justify-center px-6 py-4 mx-auto h-screen lg:h-[37.5rem] lg:py-16 bg-no-repeat bg-cover w-full"

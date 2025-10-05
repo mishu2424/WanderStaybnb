@@ -4,6 +4,7 @@ import companyLogo from "../assets/images/wanderstay.png";
 import useAuth from "../hooks/useAuth";
 import toast from "react-hot-toast";
 import { ImSpinner3 } from "react-icons/im";
+import { destroy } from "splash-screen";
 
 const Login = () => {
   const { loading, setLoading, signInWithGoogle, signIn } = useAuth();
@@ -42,6 +43,8 @@ const Login = () => {
       setLoading(false);
     }
   };
+
+  destroy();
   return (
     <div className="flex justify-center items-center min-h-screen">
       <div className="w-full max-w-sm p-6 m-auto mx-auto bg-white rounded-lg shadow-md dark:bg-gray-800">
