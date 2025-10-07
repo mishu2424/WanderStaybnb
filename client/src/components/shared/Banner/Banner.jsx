@@ -39,7 +39,7 @@ const Banner = () => {
       >
         <swiper-slide>
           <Slide
-            bannerImg={"https://i.ibb.co/C3mMYSGj/banner-3.jpg"}
+            bannerImg={"https://i.ibb.co/m5N3HZtX/photo-1618221381711-42ca8ab6e908.jpg"}
             btnText={"Explore"}
             bannerDescription={
               "From cozy hideaways to vibrant city escapes, WanderStay helps you discover places that feel like home anywhere in the world."
@@ -57,10 +57,19 @@ const Banner = () => {
         </swiper-slide>
         <swiper-slide>
           <Slide
-            bannerImg={"https://i.ibb.co/zTbhXZvs/banner-2.jpg"}
+            bannerImg={"https://i.ibb.co/F1Zs6RB/photo-1615873968403-89e068629265.jpg"}
             btnText={"Explore"}
             bannerDescription={
               "Find comfort, adventure, and style—your next unforgettable stay starts here with WanderStay."
+            }
+          ></Slide>
+        </swiper-slide>
+        <swiper-slide>
+          <Slide
+            bannerImg={"https://i.ibb.co/xqxwHSmk/photo-1601918774946-25832a4be0d6.jpg"}
+            btnText={"Explore"}
+            bannerDescription={
+              "Where every journey feels like coming home - WanderStay connects you to spaces made for comfort, connection, and discovery."
             }
           ></Slide>
         </swiper-slide>

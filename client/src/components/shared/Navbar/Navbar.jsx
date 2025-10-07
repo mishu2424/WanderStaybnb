@@ -74,9 +74,9 @@ const Navbar = ({ path }) => {
   }, []);
 
   return (
-    <div className={`${theme!=='light' && 'bg-green-800'} ${path==='/' && 'bg-transparent shadow-sm'} bg-white`}>
+    // <div className={`${theme!=='light' && 'bg-green-800'} ${path==='/' && 'bg-transparent shadow-sm'} bg-white`}>
       <div
-        className={`navbar fixed bg-fixed z-40 px-4 text-white flex items-center justify-between`}
+        className={`navbar bg-white px-4 text-white shadow-sm flex items-center justify-between border`}
       >
         <div className="flex items-center gap-3">
           <div className="flex gap-2 items-center">
@@ -219,7 +219,7 @@ const Navbar = ({ path }) => {
           </div>
         </div>
       </div>
-    </div>
+    // </div>
   );
 };
 

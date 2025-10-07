@@ -58,7 +58,7 @@ const WebsiteReview = () => {
   if (isPending) return <LoadingSpinner />;
   return (
     <Container>
-      <div className="my-5">
+      <div className="my-10">
         <form onSubmit={handleReviewPost}>
           <div>
             <div>

@@ -43,6 +43,7 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useBookmarks from "../../hooks/useBookmarks";
 import { destroy } from "splash-screen";
 import { useEffect } from "react";
+import RoomMap from "../Roommap";
 
 const amenityIcon = (name) => {
   const n = name.toLowerCase();
@@ -378,6 +379,7 @@ export default function RoomDetailsCard() {
             </div>
           </section>
         </div>
+        <RoomMap location={location}/>
       </Container>
     </article>
   );

@@ -9,7 +9,7 @@ const Card = ({ room }) => {
   const { theme } = useAuth();
 
   return (
-    <article className="relative rounded-2xl shadow-sm  bg-white overflow-hidden hover:shadow-md hover:scale-105 duration-300">
+    <article className="relative cursor-pointer rounded-2xl shadow-sm  bg-white overflow-hidden hover:shadow-md border-b border-transparent hover:border-purple-500 hover:scale-105 duration-300">
       <Link to={`/room/${id}`}>
         <div className="relative group cursor-pointer">
           <img
@@ -36,7 +36,7 @@ const Card = ({ room }) => {
         </div>
       </Link>
 
-      <div className="p-4">
+      <div className="p-4 border border-t-0 border-transparent hover:border-purple-500">
         <div className="flex items-start justify-between gap-3">
           <h3
             className={`font-semibold text-[15px] tracking-wide uppercase truncate ${theme==="night" && `text-black`}`}

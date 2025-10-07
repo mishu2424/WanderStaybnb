@@ -9,9 +9,9 @@ const Main = () => {
   console.log(path);
   return (
     <div>
-      <div className={`h-[65px] bg-transparent ${path==='/' && 'absolute'}`}>
-        <Navbar path={path} />
-      </div>
+      {/* <div className={`h-[65px] bg-transparent ${path==='/' && 'absolute'}`}> */}
+      <Navbar path={path} />
+      {/* </div> */}
       <div className="min-h-[calc(100vh-133px)]">
         <Outlet></Outlet>
       </div>
