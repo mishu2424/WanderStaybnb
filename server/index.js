@@ -5,6 +5,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const jwt = require("jsonwebtoken");
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const port = process.env.PORT || 8000;
 
@@ -98,10 +99,10 @@ async function run() {
     };
 
     app.get("/rooms", async (req, res) => {
-      const popular=req?.query?.popular;
-      console.log(popular);
-      if(popular){
-        const popularRooms=await roomsCollection.find({popular}).toArray();
+      const popular = req?.query?.popular;
+      // console.log(popular);
+      if (popular) {
+        const popularRooms = await roomsCollection.find({ popular }).toArray();
         return res.send(popularRooms);
       }
       const page = parseInt(req?.query?.page) || 1;
@@ -110,6 +111,8 @@ async function run() {
       const categoryName = req?.query?.category;
       const search = req?.query?.search;
       const sort = req?.query?.sort;
+
+      // console.log('searchtext',search);
 
       let query = {};
 
@@ -215,7 +218,7 @@ async function run() {
       res.send(result);
     });
 
-    app.get("/user/:email", verifyToken, async (req, res) => {
+    app.get("/user/:email", async (req, res) => {
       const email = req?.params?.email;
       // console.log('role',email);
 
@@ -277,6 +280,29 @@ async function run() {
         res.send(result);
       }
     );
+    // payments
+    app.post("/create-payment-intent", async (req, res) => {
+      const price = req?.body?.total;
+      // console.log('price',price);
+      //stripe accepts price in cents which is why converted it into cents by multiplying it with 100;
+      const priceInCent = parseFloat(price) * 100;
+      if (!price || priceInCent < 1) return;
+
+      // generate a client secret key
+
+      // console.log(priceInCent);
+      const { client_secret } = await stripe.paymentIntents.create({
+        amount: priceInCent,
+        currency: "cad",
+        // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
+        automatic_payment_methods: {
+          enabled: true,
+        },
+      });
+
+      // send it to client
+      res.send({ clientSecret: client_secret });
+    });
 
     // booking
     app.get(`/bookings/:email`, verifyToken, async (req, res) => {
@@ -515,16 +541,16 @@ async function run() {
     });
 
     // reviews
-    app.get(`/all-reviews`, async(req,res)=>{
-      const result=await reviewCollection.find({}).toArray();
+    app.get(`/all-reviews`, async (req, res) => {
+      const result = await reviewCollection.find({}).toArray();
       res.send(result);
-    })
+    });
 
-    app.post(`/all-review`,async(req,res)=>{
-      const reviewData=req?.body;
-      const result=await reviewCollection.insertOne(reviewData);
+    app.post(`/all-review`, async (req, res) => {
+      const reviewData = req?.body;
+      const result = await reviewCollection.insertOne(reviewData);
       res.send(result);
-    })
+    });
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });

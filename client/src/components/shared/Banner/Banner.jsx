@@ -22,7 +22,7 @@ const Banner = () => {
         navigation: true,
         effect:'fade',
         autoplay: {
-        delay: 5000,   // time in ms between slides
+        delay: 7000,   // time in ms between slides
         disableOnInteraction: true, // keeps autoplay running after manual nav
       },
       });
@@ -60,7 +60,7 @@ const Banner = () => {
             bannerImg={"https://i.ibb.co/F1Zs6RB/photo-1615873968403-89e068629265.jpg"}
             btnText={"Explore"}
             bannerDescription={
-              "Find comfort, adventure, and style—your next unforgettable stay starts here with WanderStay."
+              "Find comfort, adventure, and style - your next unforgettable stay starts here with WanderStay."
             }
           ></Slide>
         </swiper-slide>

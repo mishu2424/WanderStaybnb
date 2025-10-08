@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import LoadingSpinner from "../../components/shared/LoadingSpinner";
 import CategoryButtons from "./CategoryButtons";
 import { destroy } from "splash-screen";
+import { useRef } from "react";
 const Categories = () => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
@@ -18,6 +19,7 @@ const Categories = () => {
   const [category, setCategory] = useState("");
   const [searchText, setSearchText] = useState("");
   const [sortText, setSortText] = useState("");
+  const searchRef=useRef();
   const axiosCommon = useAxiosCommon();
 
   const getData = async () => {
@@ -54,7 +56,10 @@ const Categories = () => {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    setSearchText(e.target.value);
+    console.log(searchRef);
+    console.log(searchRef.current.value);
+    setSearchText(searchRef.current.value)
+    // setSearchText(e.target.value);
     setCurrentPage(1);
     // e.target.reset();
   };
@@ -84,10 +89,11 @@ const Categories = () => {
             <IoLocationOutline className="text-green-800" />
 
             <input
-              onBlur={(e) => {
-                setSearchText(e.target.value);
-              }}
+              // onBlur={(e) => {
+              //   setSearchText(e.target.value);
+              // }}
               defaultValue={searchText && searchText}
+              ref={searchRef}
               type="search"
               className="grow px-0"
               placeholder="Search by location, or any keyword"

@@ -3,8 +3,10 @@ import PropTypes from "prop-types"; // ES6
 import { Link } from "react-router-dom";
 import "./Slide.css";
 import { Parallax } from "react-parallax";
+import { useRef } from "react";
 
 const Slide = ({ bannerImg, btnText, bannerDescription }) => {
+  const bannerText=useRef();
   return (
     <>
       <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent"></div>
@@ -23,7 +25,7 @@ const Slide = ({ bannerImg, btnText, bannerDescription }) => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent rounded-2xl"></div>
         <div className="relative z-10 w-full h-1/2 lg:w-full flex items-center justify-center">
           <div className="max-w-lg text-center text-white font-semibold py-4 bg-white brightness-100 rounded-2xl p-5">
-            <p className="text-sm md:text-lg relative inline-block font-semibold text-transparent bg-clip-text bg-gradient-to-r from-white via-green-800 to-white animate-shine">
+            <p ref={bannerText} className="text-sm leading-5 tracking-wide md:text-lg relative inline-block font-semibold text-transparent bg-clip-text bg-gradient-to-r from-white via-green-800 to-white animate-shine">
               {bannerDescription}
             </p>
             <Link

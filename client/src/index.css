@@ -27,3 +27,8 @@
     background-position: 0% 50%;
   }
 }
+
+*::selection{
+  background-color: black;
+  color: #fff;
+}

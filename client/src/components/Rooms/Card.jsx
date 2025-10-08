@@ -9,7 +9,7 @@ const Card = ({ room }) => {
   const { theme } = useAuth();
 
   return (
-    <article className="relative cursor-pointer rounded-2xl shadow-sm  bg-white overflow-hidden hover:shadow-md border-b border-transparent hover:border-purple-500 hover:scale-105 duration-300">
+    <article className="room-card relative cursor-pointer rounded-2xl shadow-sm  bg-white overflow-hidden hover:shadow-md border-b border-transparent hover:border-purple-500 hover:scale-105 duration-300">
       <Link to={`/room/${id}`}>
         <div className="relative group cursor-pointer">
           <img

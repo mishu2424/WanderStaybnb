@@ -9,6 +9,10 @@ import {
 import { format } from "date-fns";
 import { Fragment } from "react";
 import CheckOutForm from "../shared/Form/CheckOutForm";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 const BookingModal = ({ closeModal, isOpen, bookingInfo }) => {
   return (
@@ -73,7 +77,12 @@ const BookingModal = ({ closeModal, isOpen, bookingInfo }) => {
                 </div>
                 <hr className="mt-8 " />
                 {/* checkout form */}
-                <CheckOutForm closeModal={closeModal} bookingInfo={bookingInfo}/>
+                <Elements stripe={stripePromise}>
+                  <CheckOutForm
+                    closeModal={closeModal}
+                    bookingInfo={bookingInfo}
+                  />
+                </Elements>
               </DialogPanel>
             </TransitionChild>
           </div>
