@@ -41,7 +41,7 @@ const GuestMenu = () => {
       closeModal();
     }
   };
-  console.log(role);
+  // console.log(role);
 
   if (isLoading) return <LoadingSpinner />;
   return (
@@ -55,7 +55,7 @@ const GuestMenu = () => {
       <MenuItem
         icon={BsFingerprint}
         label="My Bookings"
-        address="my-bookings"
+        address="/dashboard/my-bookings"
       />
 
       {role === "guest" && (

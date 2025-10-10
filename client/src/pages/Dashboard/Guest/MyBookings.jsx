@@ -20,6 +20,7 @@ const MyBookings = () => {
       return data;
     },
   });
+  
 
   if (loading || isLoading) return <LoadingSpinner />;
   return (
@@ -77,7 +78,7 @@ const MyBookings = () => {
                   <tbody>
                     {/* Table Row Data */}
                     {bookings.map((booking) => (
-                      <BookingDataRow key={booking?._id} booking={booking} />
+                      <BookingDataRow key={booking?._id} booking={booking} refetch={refetch}/>
                     ))}
                   </tbody>
                 ) : (

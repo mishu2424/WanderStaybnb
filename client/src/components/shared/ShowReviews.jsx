@@ -6,7 +6,7 @@ import { useState } from "react";
 import LoadingSpinner from "./LoadingSpinner";
 import Container from "./Container";
 import { format } from "date-fns";
-
+import logo from '../../assets/images/placeholder.jpg'
 // const CustomLeftArrow = ({ onClick, hovered }) => (
 //   <button
 //     onClick={onClick}
@@ -159,7 +159,7 @@ const ShowReviews = () => {
                         <div className="w-full p-6 bg-green-800 md:flex md:items-center rounded-2xl md:bg-transparent md:p-0 lg:px-12 md:justify-evenly">
                           <img
                             className="h-24 w-24 md:mx-6 rounded-full object-cover shadow-md md:h-[32rem] md:w-80 lg:h-[36rem] lg:w-[26rem] md:rounded-2xl"
-                            src={review?.user?.photoURL}
+                            src={review?.user?.photoURL || logo}
                             alt="client photo"
                           />
 

@@ -1,20 +1,20 @@
-import { useEffect, useState } from "react";
-
-import Carousel from "react-multi-carousel";
-import "react-multi-carousel/lib/styles.css";
 import { useQuery } from "@tanstack/react-query";
-import Slider from "./Slider";
-import LoadingSpinner from "../LoadingSpinner";
 import useAxiosCommon from "../../../hooks/useAxiosCommon";
-import { destroy } from "splash-screen";
+import LoadingSpinner from "../LoadingSpinner";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { EffectCards } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/effect-cards";
+import { Link } from "react-router-dom";
+import { FaCircleArrowRight } from "react-icons/fa6";
 
 const PopularRooms = () => {
   const axiosCommon = useAxiosCommon();
-  const { data: rooms, isLoading } = useQuery({
+
+  const { data: rooms = [], isLoading } = useQuery({
     queryKey: ["popular-rooms"],
     queryFn: async () => {
       const { data } = await axiosCommon(`/rooms?popular=${true}`);
-      destroy();
       return data;
     },
   });
@@ -22,63 +22,52 @@ const PopularRooms = () => {
   if (isLoading) return <LoadingSpinner />;
 
   return (
-    <Carousel
-      additionalTransfrom={0}
-      arrows
-      autoPlaySpeed={3000}
-      centerMode
-      className=""
-      containerClass="container"
-      dotListClass=""
-      draggable
-      focusOnSelect={false}
-      infinite
-      itemClass="px-4"
-      keyBoardControl
-      minimumTouchDrag={80}
-      pauseOnHover
-      renderArrowsWhenDisabled={false}
-      renderButtonGroupOutside={false}
-      renderDotsOutside={false}
-      responsive={{
-        desktop: {
-          breakpoint: {
-            max: 3000,
-            min: 1024,
-          },
-          items: 1,
-          partialVisibilityGutter: 40,
-        },
-        mobile: {
-          breakpoint: {
-            max: 464,
-            min: 0,
-          },
-          items: 1,
-          partialVisibilityGutter: 30,
-        },
-        tablet: {
-          breakpoint: {
-            max: 1024,
-            min: 464,
-          },
-          items: 1,
-          partialVisibilityGutter: 30,
-        },
-      }}
-      rewind={false}
-      rewindWithAnimation={false}
-      rtl={false}
-      shouldResetAutoplay
-      showDots={false}
-      sliderClass=""
-      slidesToSlide={1}
-      swipeable
-    >
-      {rooms.map((room, id) => (
-        <Slider room={room} key={id}></Slider>
-      ))}
-    </Carousel>
+    <div className="w-full flex justify-center">
+      <Swiper
+        effect="cards"
+        grabCursor
+        modules={[EffectCards]}
+        // 👇 give the swiper a predictable size (cards effect needs it)
+        className="mySwiper w-[320px] h-[420px] md:w-[360px] md:h-[480px]"
+      >
+        {rooms.map((room) => (
+          <SwiperSlide key={room._id}>
+            {/* slide content */}
+            <div className="block w-full h-full">
+              <div className="relative w-full h-full rounded-2xl overflow-hidden group">
+                <img
+                  src={room.image}
+                  alt={room.title}
+                  className="w-full h-full group-hover:scale-105 duration-700 object-cover brightness-95 hover:brightness-75"
+                  loading="lazy"
+                />
+                <div className="absolute inset-x-0 bottom-0 bg-black/45 text-white p-3">
+                  <p className="text-sm font-semibold line-clamp-1">
+                    {room.title}
+                  </p>
+                  <p className="text-xs opacity-90 line-clamp-1">
+                    {room.location}
+                  </p>
+                </div>
+                <Link
+                  to={`/room/${room?._id}`}
+                  className="absolute left-1/2 
+      -translate-x-1/2 -translate-y-1/2
+      -top-1/2 group-hover:top-1/2
+      bg-transparent border border-green-800 text-white
+      px-4 py-2 rounded-lg shadow-md cursor-pointer
+      hover:bg-green-800 hover:text-white
+      transition-all duration-500 ease-in-out flex items-center gap-2 font-semibold"
+                >
+                  Details{" "}
+                  <FaCircleArrowRight className="hover:text-green-800" />
+                </Link>
+              </div>
+            </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </div>
   );
 };
 

@@ -7,3 +7,49 @@
   background-size: 200% auto;
   animation: shine 80s linear infinite;
 }
+
+.custom-swiper-button-prev,
+.custom-swiper-button-next {
+  position: absolute;
+  top: 50%;
+  z-index: 50;
+  transform: translateY(-50%);
+  background-color: rgba(255, 255, 255, 0.85);
+  color: black; /* green-800 */
+  font-size: 2rem;
+  width: 1.5em;
+  height: 1.5em;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.custom-swiper-button-prev { left: 100px; }
+.custom-swiper-button-next { right: 100px; }
+
+.custom-swiper-button-prev:hover,
+.custom-swiper-button-next:hover {
+  background-color: #166534;
+  color: #fff;
+  transform: translateY(-50%) scale(1.08);
+}
+
+/* 🔑 Swiper adds this when at the beginning or end */
+.custom-swiper-button-prev.swiper-button-disabled,
+.custom-swiper-button-next.swiper-button-disabled {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Hide Swiper navigation buttons on mobile */
+@media (max-width: 768px) {
+  .custom-swiper-button-prev{
+    left:20px
+  }
+  .custom-swiper-button-next {
+    right: 20px;
+  }
+}

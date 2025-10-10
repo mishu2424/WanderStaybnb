@@ -12,11 +12,13 @@ const AddRoomForm = ({
   imageText,
   imageFile,
   handleImagePreview,
+  isValid,
 }) => {
   const [customFacility, setCustomFacility] = useState("");
   const [customAmenity, setCustomAmenity] = useState("");
   const [customRule, setCustomRule] = useState("");
 
+  console.log(isValid);
   const facilities = [
     "Self check-in",
     "Elevator access",
@@ -86,26 +88,32 @@ const AddRoomForm = ({
           name="price"
           placeholder="Price"
           className="border border-gray-300 p-2 rounded"
+          required
         />
         <input
           type="number"
           name="guests"
           placeholder="Guests"
           className="border border-gray-300 p-2 rounded"
+          required
         />
       </div>
+
       <div className="grid grid-cols-2 gap-3">
         <input
           type="number"
           name="bathrooms"
           placeholder="Bathrooms"
           className="border border-gray-300 p-2 rounded"
+          required
         />
+
         <input
           type="number"
           name="bedrooms"
           placeholder="Bedrooms"
           className="border border-gray-300 p-2 rounded"
+          required
         />
       </div>
       {/* Host */}
@@ -114,28 +122,48 @@ const AddRoomForm = ({
         type="text"
         name="response_rate"
         placeholder="Response Rate"
-        className="border border-gray-300 p-2 rounded"
+        className="border border-gray-300 p-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+        list="suggestions1"
+        required
       />
-      <input
-        type="text"
+      <datalist id="suggestions1">
+        <option value="100%" />
+      </datalist>
+
+      <select
         name="response_time"
-        placeholder="Response Time"
-        className="border border-gray-300 p-2 rounded"
-      />
+        defaultValue="within an hour"
+        className="select border text-gray-500 border-gray-300 p-2 rounded w-full"
+      >
+        <option>within an hour</option>
+        <option>within 24hours</option>
+        <option>within 48hours</option>
+      </select>
+
       <input
         type="text"
         name="languages"
+        list="suggestions3"
         placeholder="Languages (comma separated)"
+        pattern="^([A-Za-z]+(, ?))*[A-Za-z]+$"
+        title="Enter languages separated by commas (e.g., English, French, Spanish)"
         className="border border-gray-300 p-2 rounded"
+        required
       />
+      <datalist id="suggestions3">
+        <option value="English" />
+      </datalist>
+ 
       {/* Rating */}
-      <h3 className="font-medium mt-2">Rating</h3>
+      <h3 className="font-medium mt-2">Rating (default rating maximum 4)</h3>
       <input
         name="score"
         type="number"
         step="0.1"
-        placeholder="Score"
+        max={4}
+        placeholder="rating"
         className="border border-gray-300 p-2 rounded"
+        required
       />
       {/* Other info */}
       {/* Facilities */}
@@ -236,15 +264,19 @@ const AddRoomForm = ({
           </div>
         </div>
       </div>
+
+      
       <label className="block font-medium mb-1">Other Information</label>
       <textarea
         name="description"
         placeholder="Description"
         className="border border-gray-300 p-2 rounded"
+        required
       />
       <div className="border border-gray-300 flex items-center">
         <input
           className=" p-2 rounded"
+          required
           type="file"
           name="image"
           id="image"
@@ -270,18 +302,30 @@ const AddRoomForm = ({
         autoComplete="flexible"
         name="cancellation_policy"
         placeholder="Cancellation Policy"
+        list="suggestions4"
         className="border border-gray-300 p-2 rounded"
+        required
       />
+      <datalist id="suggestions4">
+        <option value="flexible" />
+      </datalist>
+
       <input
         autoComplete="24 hours"
         name="cancellation_before"
         placeholder="Cancellation Before (e.g., 24 hours)"
         className="border border-gray-300 p-2 rounded"
+        required
       />
+      <datalist id="suggestions4">
+        <option value="24 hours" />
+      </datalist>
+
       <input
         name="address_line"
         placeholder="Address Line"
         className="border border-gray-300 p-2 rounded"
+        required
       />
       <button
         type="submit"

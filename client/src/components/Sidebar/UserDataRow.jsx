@@ -5,6 +5,7 @@ import { useMutation } from "@tanstack/react-query";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { useState } from "react";
 import useAuth from "../../hooks/useAuth";
+import Swal from "sweetalert2";
 
 const UserDataRow = ({ user, refetch }) => {
   const { user: loggedInUser } = useAuth();
@@ -44,9 +45,49 @@ const UserDataRow = ({ user, refetch }) => {
       role,
       status: "Verified",
     };
-    console.log(updatedUser);
+    // console.log(updatedUser);
     try {
       await updateUserRoleAsync(updatedUser);
+    } catch (err) {
+      toast.error(err.message);
+    }
+  };
+
+  const { mutateAsync } = useMutation({
+    mutationKey: ["block-user"],
+    mutationFn: async (user) => {
+      const { data } = await axiosSecure.delete(`/block-user/${user?.email}`);
+      return data;
+    },
+  });
+
+  const handleBlockUser = async (user) => {
+    if (loggedInUser?.email === user?.email)
+      return toast.error("Admin cannot block their own account");
+    try {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          try {
+            await mutateAsync(user);
+            refetch();
+            Swal.fire({
+              title: "Deleted!",
+              text: "Your file has been deleted.",
+              icon: "success",
+            });
+          } catch (err) {
+            toast.error(err.message);
+          }
+        }
+      });
     } catch (err) {
       toast.error(err.message);
     }
@@ -94,6 +135,17 @@ const UserDataRow = ({ user, refetch }) => {
           refetch={refetch}
           modalHandler={modalHandler}
         />
+
+        <button
+          onClick={() => handleBlockUser(user)}
+          className="relative cursor-pointer ml-2 inline-block px-3 py-1 font-semibold text-red-900 leading-tight"
+        >
+          <span
+            aria-hidden="true"
+            className="absolute inset-0 bg-red-100 opacity-50 rounded-full"
+          ></span>
+          <span className="relative">Block User</span>
+        </button>
       </td>
     </tr>
   );

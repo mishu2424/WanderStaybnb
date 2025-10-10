@@ -10,12 +10,13 @@ const HostMenu = () => {
         label={"Statistics"}
         icon={BsGraphUp}
       />
-      <MenuItem icon={BsFillHouseAddFill} label="Add Room" address="add-room" />
-      <MenuItem icon={MdHomeWork} label="My Listings" address="my-listings" />
+      <MenuItem icon={BsFillHouseAddFill} label="Add Room" address="/dashboard/add-room" />
+      <MenuItem icon={MdHomeWork} label="My Listings" address="/dashboard/my-listings" />
       <MenuItem
         icon={MdOutlineManageHistory}
         label="Manage Bookings"
-        address="manage-bookings"
+        address="/dashboard/manage-bookings"
+        exact={false}
       />
     </>
   );

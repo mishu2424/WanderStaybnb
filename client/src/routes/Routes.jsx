@@ -20,6 +20,7 @@ import ManageBookings from "../pages/Dashboard/Host/ManageBookings";
 import GuestStatistics from "../pages/Dashboard/Guest/GuestStatistics";
 import HostStatistics from "../pages/Dashboard/Host/HostStatistics";
 import AdminStatistics from "../pages/Dashboard/Admin/AdminStatistics";
+import ArticlePage from "../pages/ArticlePage/ArticlePage";
 
 export const router = createBrowserRouter([
   {
@@ -38,10 +39,14 @@ export const router = createBrowserRouter([
       {
         path: "/room/:id",
         element: (
-          <PrivateRoute>
-            <RoomDetails />
-          </PrivateRoute>
+          // <PrivateRoute>
+          <RoomDetails />
+          // </PrivateRoute>
         ),
+      },
+      {
+        path: "articles",
+        element: <ArticlePage />,
       },
     ],
   },
@@ -67,18 +72,18 @@ export const router = createBrowserRouter([
       },
       // guest
       {
-        path:'guest-stats',
-        element:<GuestStatistics/>
+        path: "guest-stats",
+        element: <GuestStatistics />,
       },
       {
-        path:'my-bookings',
-        element:<MyBookings/>,
+        path: "my-bookings",
+        element: <MyBookings />,
       },
 
       // host
       {
-        path:'host-stats',
-        element:<HostStatistics/>
+        path: "host-stats",
+        element: <HostStatistics />,
       },
       {
         path: "add-room",
@@ -112,8 +117,8 @@ export const router = createBrowserRouter([
       },
       // admin
       {
-        path:'admin-stats',
-        element:<AdminStatistics/>
+        path: "admin-stats",
+        element: <AdminStatistics />,
       },
       {
         path: "manage-users",

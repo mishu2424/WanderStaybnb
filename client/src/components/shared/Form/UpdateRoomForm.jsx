@@ -60,7 +60,8 @@ const UpdateRoomForm = ({
   };
 
   return (
-    <form
+    <div data-lenis-prevent className="max-h-[80vh] overflow-y-auto overscroll-contain pr-2">
+      <form
       onSubmit={handleUpdateRoom}
       className="w-full p-6 bg-white rounded-xl shadow-md grid gap-4"
     >
@@ -344,7 +345,8 @@ const UpdateRoomForm = ({
       />
       <button
         type="submit"
-        className="bg-green-700 text-white py-2 px-4 rounded hover:bg-green-800 cursor-pointer"
+        disabled={room?.booked}
+        className={`disabled:bg-gray-200 disabled:cursor-default bg-green-800 text-white py-2 px-4 rounded hover:bg-green-800 cursor-pointer`}
       >
         {loading ? (
           <TbFidgetSpinner className="animate-spin m-auto" />
@@ -360,6 +362,7 @@ const UpdateRoomForm = ({
         Cancel
       </button>
     </form>
+    </div>
   );
 };
 

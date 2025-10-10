@@ -6,7 +6,7 @@ import Footer from "../components/shared/Footer/Footer";
 const Main = () => {
   const location = useLocation();
   const path = location?.pathname;
-  console.log(path);
+  // console.log(path);
   return (
     <div>
       {/* <div className={`h-[65px] bg-transparent ${path==='/' && 'absolute'}`}> */}

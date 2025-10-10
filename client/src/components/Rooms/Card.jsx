@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import ReactStars from "react-rating-stars-component";
 import { FaStar, FaStarHalfAlt } from "react-icons/fa";
 import useAuth from "../../hooks/useAuth";
+import { Rating } from "@smastrom/react-rating";
+import "@smastrom/react-rating/style.css";
 
 const Card = ({ room }) => {
   const { _id: id, location, image, title, rating, price, amenities } = room;
@@ -39,7 +41,9 @@ const Card = ({ room }) => {
       <div className="p-4 border border-t-0 border-transparent hover:border-purple-500">
         <div className="flex items-start justify-between gap-3">
           <h3
-            className={`font-semibold text-[15px] tracking-wide uppercase truncate ${theme==="night" && `text-black`}`}
+            className={`font-semibold text-[15px] tracking-wide uppercase truncate ${
+              theme === "night" && `text-black`
+            }`}
             title={title}
           >
             {title}
@@ -52,7 +56,13 @@ const Card = ({ room }) => {
         </p>
 
         <div className="flex items-center justify-between">
-          <p className={`mt-3 text-lg font-semibold ${theme==="night" && `text-black`}`}>${price}</p>
+          <p
+            className={`mt-3 text-lg font-semibold ${
+              theme === "night" && `text-black`
+            }`}
+          >
+            ${price}
+          </p>
           <div className="text-gray-800 flex items-center gap-1">
             <ReactStars
               count={5}
@@ -63,6 +73,7 @@ const Card = ({ room }) => {
               halfIcon={<FaStarHalfAlt className="text-yellow-500" />} // Half stars
               filledIcon={<FaStar className="text-yellow-500" />} // Full stars
               activeColor="text-yellow-500"
+              edit={false} // ✅ makes it read-only
             />
             <span className="text-xs font-medium">
               {Number(rating?.score || 0).toFixed(1)}

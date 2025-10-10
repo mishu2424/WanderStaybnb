@@ -11,10 +11,21 @@ import { Fragment } from "react";
 import CheckOutForm from "../shared/Form/CheckOutForm";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
+import copy from "copy-to-clipboard";
+import { TiClipboard } from "react-icons/ti";
+import { IoMdCheckmark } from "react-icons/io";
+
+import { useState } from "react";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 const BookingModal = ({ closeModal, isOpen, bookingInfo }) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    copy("4242424242424242");
+    setCopied(true);
+  };
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={closeModal}>
@@ -69,13 +80,29 @@ const BookingModal = ({ closeModal, isOpen, bookingInfo }) => {
                     {format(new Date(bookingInfo?.to), "PP")}
                   </p>
                 </div>
-
                 <div className="mt-2">
                   <p className="text-sm text-gray-500">
                     Price: $ {bookingInfo?.total}
                   </p>
                 </div>
-                <hr className="mt-8 " />
+                <hr className="mt-8 text-gray-200" />
+                {/* Copy Test Card Info */}
+                <div className="flex items-center justify-between text-xs bg-gray-100 p-3 rounded-md">
+                  <span className="text-gray-700">
+                    For testing, use this card number:
+                    <br />
+                    <span className="font-mono text-sm">
+                      4242 4242 4242 4242
+                    </span>
+                  </span>
+                  <button
+                    onClick={handleCopy}
+                    type="button"
+                    className="ml-2 text-blue-600 hover:text-blue-800"
+                  >
+                    {copied ? <IoMdCheckmark /> : <TiClipboard size={16} />}
+                  </button>
+                </div>{" "}
                 {/* checkout form */}
                 <Elements stripe={stripePromise}>
                   <CheckOutForm

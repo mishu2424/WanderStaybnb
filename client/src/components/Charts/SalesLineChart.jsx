@@ -19,14 +19,14 @@ const options = {
 };
 const SalesLineChart = ({ data }) => {
   const [loading, setLoading] = useState(true);
-  console.log(data);
+  // console.log(data);
 
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
     }, 2000);
   }, []);
-  console.log(data);
+  // console.log(data);
 
   return (
     <>

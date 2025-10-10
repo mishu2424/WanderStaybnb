@@ -17,9 +17,11 @@ import "splash-screen/dist/splash-screen.min.css"; // all-in-one CSS
 enable("windcatcher");
 // Create a client
 const queryClient = new QueryClient();
-// setTimeout(() => {
-//   destroy();
-// }, 1500);
+
+// wait for assets or data if needed
+await new Promise((res) => setTimeout(res, 1500));
+
+destroy();
 
 createRoot(document.getElementById("root")).render(
   <HelmetProvider>
@@ -28,7 +30,7 @@ createRoot(document.getElementById("root")).render(
         <ReactLenis
           root
           options={{
-            lerp: 0.08, // 0..1 (lower = smoother, higher = snappier)
+            lerp: 0.09, // 0..1 (lower = smoother, higher = snappier)
             smoothWheel: true,
             smoothTouch: true, // optional on mobile
             duration: 1.2, // alternative to lerp (seconds per “distance”)

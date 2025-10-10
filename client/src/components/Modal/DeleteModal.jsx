@@ -8,7 +8,9 @@ import {
 import { Fragment } from "react";
 import PropTypes from "prop-types";
 import { TbFidgetSpinner } from "react-icons/tb";
+
 const DeleteModal = ({ closeModal, isOpen, handleDeleteRoom, id, loading }) => {
+  // console.log('deletemodal',handleDeleteRoom);
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={closeModal}>
@@ -48,27 +50,29 @@ const DeleteModal = ({ closeModal, isOpen, handleDeleteRoom, id, loading }) => {
                   </p>
                 </div>
                 <hr className="mt-8 " />
-                <div className="flex mt-2 justify-around">
-                  <button
-                    disabled={loading}
-                    onClick={() => handleDeleteRoom(id)}
-                    type="button"
-                    className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
-                  >
-                    {loading ? (
-                      <TbFidgetSpinner className="animate-spin m-auto" />
-                    ) : (
-                      "Yes"
-                    )}
-                  </button>
-                  <button
-                    type="button"
-                    className="inline-flex justify-center rounded-md border border-transparent bg-green-100 px-4 py-2 text-sm font-medium text-green-900 hover:bg-green-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
-                    onClick={closeModal}
-                  >
-                    No
-                  </button>
-                </div>
+                <form onSubmit={(e) => handleDeleteRoom(e,id)}>
+                  <textarea className="w-full my-2 border border-gray-300 p-2" name="reason" placeholder="You must tell the reason" required></textarea>
+                  <div className="flex mt-2 justify-around">
+                    <button
+                      disabled={loading}
+                      type="submit"
+                      className="inline-flex justify-center rounded-md border border-transparent bg-red-100 px-4 py-2 text-sm font-medium text-red-900 hover:bg-red-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
+                    >
+                      {loading ? (
+                        <TbFidgetSpinner className="animate-spin m-auto" />
+                      ) : (
+                        "Yes"
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      className="inline-flex justify-center rounded-md border border-transparent bg-green-100 px-4 py-2 text-sm font-medium text-green-900 hover:bg-green-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
+                      onClick={closeModal}
+                    >
+                      No
+                    </button>
+                  </div>
+                </form>
               </DialogPanel>
             </TransitionChild>
           </div>

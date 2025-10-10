@@ -13,7 +13,7 @@ import CategoryButtons from "./CategoryButtons";
 import { destroy } from "splash-screen";
 import { useRef } from "react";
 const Categories = () => {
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(4);
   const [currentPage, setCurrentPage] = useState(1);
   const [count, setCount] = useState(0);
   const [category, setCategory] = useState("");
@@ -22,11 +22,12 @@ const Categories = () => {
   const searchRef=useRef();
   const axiosCommon = useAxiosCommon();
 
+  // console.log(itemsPerPage);
   const getData = async () => {
     const { data } = await axiosCommon(
       `/rooms?page=${currentPage}&limit=${itemsPerPage}&category=${category}&search=${searchText}&sort=${sortText}`
     );
-    destroy();
+    // destroy();
     return data;
   };
 
@@ -51,13 +52,13 @@ const Categories = () => {
   const handleCategoryChange = (label) => {
     setCurrentPage(1);
     setCategory(label);
-    console.log("clicked");
+    // console.log("clicked");
   };
 
   const handleSearch = (e) => {
     e.preventDefault();
-    console.log(searchRef);
-    console.log(searchRef.current.value);
+    // console.log(searchRef);
+    // console.log(searchRef.current.value);
     setSearchText(searchRef.current.value)
     // setSearchText(e.target.value);
     setCurrentPage(1);

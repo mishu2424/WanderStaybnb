@@ -1,86 +1,53 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import companyLogo from "../../../assets/images/wanderstay.png";
-import articleVideo from "../../../assets/videos/video1.mp4";
 import Container from "../Container";
 import PopularRooms from "./PopularRooms";
 import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useEffect } from "react";
 
-gsap.registerPlugin(useGSAP);
+gsap.registerPlugin(ScrollTrigger);
 const TopRooms = () => {
   const container = useRef();
-  const cursorRef = useRef();
-  const videoRef = useRef();
+  const popularTextRef = useRef();
+  const cardsRef = useRef();
+  const location=useLocation();
+  // When you navigate back to Home, refresh trigger positions once it renders.
+  useEffect(() => {
+    // wait one frame for layout to settle (images, fonts, etc.)
+    const id = requestAnimationFrame(() => ScrollTrigger.refresh());
+    return () => cancelAnimationFrame(id);
+  }, [location.pathname]);
   useGSAP(
     (context, contextSafe) => {
-      const cursor = cursorRef.current;
-      const scope = container.current;
-      const video = videoRef.current;
-
-      // Center transform on the cursor & hide initially
-      gsap.set(cursor, { opacity: 0, scale: 0, xPercent: -50, yPercent: -50 });
-      gsap.set(cursor, { willChange: "transform" }); // perf hint
-
-      // 🔥 trailing setters
-      const xTo = gsap.quickTo(cursor, "x", {
-        duration: 0.45,
-        ease: "power3.out",
-      });
-      const yTo = gsap.quickTo(cursor, "y", {
-        duration: 0.45,
-        ease: "power3.out",
-      });
-
-      // On mouse move, follow cursor smoothly
-      const handleMouseMove = (e) => {
-        const rect = video.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
-
-        // trailing movement
-        xTo(x);
-        yTo(y);
-      };
-
-      // Show cursor on enter
-      const handleMouseEnter = () => {
-        gsap.to(cursor, {
-          opacity: 1,
-          scale: 1,
-          duration: 0.3,
-          ease: "back.out(1.7)",
-        });
-      };
-
-      // Hide cursor on leave
-      const handleMouseLeave = () => {
-        gsap.to(cursor, {
-          opacity: 0,
-          scale: 0,
-          duration: 0.1,
-        });
-      };
-
-      // Attach listeners
-      video.addEventListener("mousemove", handleMouseMove);
-      video.addEventListener("mouseenter", handleMouseEnter);
-      video.addEventListener("mouseleave", handleMouseLeave);
-
       gsap.fromTo(
-        video,
+        popularTextRef.current,
+        { scale: 0, opacity: 0 },
         {
-          y:180,
-          scale:0,
-          opacity:0,
-        },
+          scale: 1,
+          opacity: 1,
+          delay: 0.5,
+          duration: 0.6,
+          stagger: 0.5,
+          scrollTrigger: {
+            trigger: container.current, // watch this section
+            start: "top 45%", // when top of section hits 80% of viewport
+            toggleActions: "play none none reverse",
+            // ↑ play when in view, reverse when leaving
+          },
+        }
+      );
+      gsap.fromTo(
+        cardsRef.current,
+        { x: -80, opacity: 0 },
         {
-          y:0,
-          scale:1,
-          opacity:1,
-          duration:0.5,
-          delay:0.3,
+          x: 0,
+          opacity: 1,
+          delay: 0.5,
+          duration: 0.6,
+          stagger: 0.5,
           scrollTrigger: {
             trigger: container.current, // watch this section
             start: "top 40%", // when top of section hits 80% of viewport
@@ -88,55 +55,66 @@ const TopRooms = () => {
             // ↑ play when in view, reverse when leaving
           },
         }
-      )
-
-      // Cleanup on unmount
-      return () => {
-        video.removeEventListener("mousemove", handleMouseMove);
-        video.removeEventListener("mouseenter", handleMouseEnter);
-        video.removeEventListener("mouseleave", handleMouseLeave);
-      };
+      );
     },
     { scope: container }
   );
-
   return (
     <Container>
       <div className="my-5">
         <h2 className="font-extrabold text-xl uppercase bg-green-800 text-white my-2">
           Popular destinations
         </h2>
-        <div className="relative grid grid-cols-1 md:grid-cols-2 items-center">
-          <div className="relative" ref={container}>
-            <div
-              ref={cursorRef}
-              className="absolute cursor-default pointer-events-none z-20 w-24 h-24 bg-black text-white rounded-full flex items-center justify-center"
-            >
-              <p className="font-bold">Read</p>
-            </div>
-            {/* <img
-              ref={pictureRef}
-              src="https://i.ibb.co/0y0Gy3fZ/airbnb-host-welcoming-guests.jpg"
-              className="w-full lg:w-3/4 h-3/4 object-cover"
-            /> */}
-
-            <video
-              autoPlay
-              muted
-              loop
-              className="w-full lg:w-3/4 h-[500px] object-cover brightness-110 rounded-br-2xl"
-              ref={videoRef}
-            >
-              <source src={articleVideo} />
-            </video>
+        <div
+          className="relative grid grid-cols-1 md:grid-cols-2 "
+          ref={container}
+        >
+          <div
+            className="relative flex flex-col items-center gap-3 justify-center mb-2"
+            ref={popularTextRef}
+          >
+            <h1 className="uppercase text-5xl font-bold font-bebas tracking-wide">
+              Popular rooms
+            </h1>
+            <p className="text-center">
+              Discover our most-loved stays chosen by travelers from around the
+              world. From cozy hideaways to stylish city escapes, these rooms
+              are where comfort meets unforgettable experiences. Each space is
+              thoughtfully designed to make you feel at home, whether you are
+              unwinding by the beach or exploring a bustling city. Book your
+              perfect stay today and see why these destinations are among our
+              guests’ top favorites.
+            </p>
           </div>
-          <div className="relative w-full h-3/4 object-cover flex flex-col justify-center gap-5">
+          <div
+            ref={cardsRef}
+            className="relative w-full h-full object-cover flex flex-col gap-5"
+          >
             <PopularRooms />
             <Link
               to={`/rooms`}
-              className="w-full btn px-8 py-2 bg-green-800 text-white cursor-pointer hover:bg-white hover:border-green-800 hover:text-green-800"
+              className="relative group btn flex bg-green-800 text-white items-center justify-start px-6 py-3 overflow-hidden font-bold rounded group"
             >
-              Explore More
+              <span className="w-32 h-32 rotate-45 translate-x-12 -translate-y-2 absolute left-0 top-0  opacity-[3%]"></span>
+              <span className="absolute top-0 left-0 w-48 h-48 -mt-1 transition-all duration-500 ease-in-out rotate-45 -translate-x-56 -translate-y-24 bg-white opacity-100 group-hover:-translate-x-8"></span>
+              <span className="relative w-full text-left text-white transition-colors duration-200 ease-in-out group-hover:text-gray-900">
+                Explore More
+                <svg
+                  className="w-7 h-7 inline pl-2 scale-0 group-hover:scale-100 text-green-800"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M14 5l7 7m0 0l-7 7m7-7H3"
+                  ></path>
+                </svg>
+              </span>
+              <span className="absolute inset-0  rounded-full"></span>
             </Link>
           </div>
         </div>

@@ -8,9 +8,10 @@ import ResetPasswordForm from "../shared/Form/ResetPasswordForm";
 const ResetPasswordModal = ({
   handleResetPassword,
   isResetPasswordOpen,
-  setIsResetPasswordOpen
+  setIsResetPasswordOpen,
+  resetEmail
 }) => {
-  // console.log(isOpen, setIsOpen);
+  // console.log(resetEmail);
   return (
     <Transition appear show={isResetPasswordOpen} as={Fragment}>
       <Dialog
@@ -49,7 +50,7 @@ const ResetPasswordModal = ({
                   Update Password
                 </Dialog.Title>
                 <div className="mt-2">
-                  <ResetPasswordForm handleResetPassword={handleResetPassword}/>
+                  <ResetPasswordForm handleResetPassword={handleResetPassword} resetEmail={resetEmail}/>
                 </div>
 
                 <div className="mt-4">

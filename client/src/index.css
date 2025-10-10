@@ -1,5 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Jost:ital,wght@0,100..900;1,100..900&display=swap');
-@import "tailwindcss";
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Jost:ital,wght@0,100..900;1,100..900&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=BBH+Sans+Bartle&family=Cinzel:wght@400..900&family=Roboto+Condensed:ital,wght@0,100..900;1,100..900&display=swap');@import "tailwindcss";
 @plugin "daisyui";
 @plugin "daisyui" {
   themes: light --default, night;
@@ -7,6 +7,9 @@
 @theme {
   --font-jost: Jost, sans-serif;
   --font-bebas: Bebas Neue, sans-serif;
+  --font-cinzel: Cinzel, serif;
+  --font-bartle: BBH Sans Bartle, sans-serif;
+  --font-roboto:Roboto Condensed, sans-serif;
 }
 
 .animate-gradient {
@@ -28,7 +31,12 @@
   }
 }
 
-*::selection{
+*::selection {
   background-color: black;
   color: #fff;
 }
+
+
+/* body{
+  background-color: black;
+} */

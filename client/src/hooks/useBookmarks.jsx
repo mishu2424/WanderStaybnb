@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 const useBookmarks = (roomId) => {
   const { user, loading } = useAuth();
   const axiosSecure = useAxiosSecure();
-  console.log(roomId);
+  // console.log(roomId);
 
   const { data: isBookMarked, isLoading:bookMarkLoading } = useQuery({
     queryKey: ["book-mark",user?.email,roomId],

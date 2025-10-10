@@ -28,7 +28,7 @@ const WebsiteReview = () => {
 
     if (!loggedInUser?.email) {
       // redirect to login and remember where user came from
-      navigate("/login", { replace: true, state: { from: location.pathname } });
+navigate("/login", { replace: true, state: { from: location } });
       return;
     }
     const form = new FormData(e.target);

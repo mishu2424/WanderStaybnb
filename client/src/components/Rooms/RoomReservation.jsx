@@ -61,7 +61,7 @@ const RoomReservation = ({
       <div className="mt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div
           className={`text-lg sm:text-xl font-semibold ${
-            theme === "night" && `text-black`
+            theme === "night" && `text-white`
           }`}
         >
           ${bookingInfo?.price}{" "}
@@ -69,7 +69,7 @@ const RoomReservation = ({
         </div>
         <div
           className={`text-lg sm:text-xl font-semibold ${
-            theme === "night" && `text-black`
+            theme === "night" && `text-white`
           }`}
         >
           Total: ${total}{" "}

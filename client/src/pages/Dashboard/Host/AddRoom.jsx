@@ -14,11 +14,26 @@ const AddRoom = () => {
   const [imageFile, setImageFile] = useState();
   const [imageText, setImageText] = useState("Upload Image");
   const [loading, setLoading] = useState(false);
+
   const axiosSecure = useAxiosSecure();
+  const today = new Date();
+  // get first day of next month
+  const firstOfNextMonth = new Date(
+    today.getFullYear(),
+    today.getMonth() + 1,
+    1
+  );
+
+  // get last day of next month
+  const endOfNextMonth = new Date(
+    firstOfNextMonth.getFullYear(),
+    firstOfNextMonth.getMonth() + 1,
+    0
+  );
   const [date, setDate] = useState([
     {
-      startDate: new Date(),
-      endDate: null,
+      startDate: today,
+      endDate: endOfNextMonth,
       key: "selection",
     },
   ]);
@@ -59,8 +74,12 @@ const AddRoom = () => {
     const bedrooms = form.get("bedrooms");
     const response_rate = form.get("response_rate");
     const response_time = form.get("response_time");
+
+    // languages
     const languages = form.getAll("languages");
-    const score = Number(form.get("score"));
+
+
+    const score = Number(form.get("score")) || 4;
     const rating = {
       score,
     };
@@ -68,8 +87,8 @@ const AddRoom = () => {
     let facility = form
       .getAll("facility")
       .map((s) => s.trim())
-      .filter(Boolean); // removes "" and whitespace-only 
-      //filter(Boolean) is a shorthand trick in JavaScript.It removes all falsy values from the array ("", null, undefined, false, 0).
+      .filter(Boolean); // removes "" and whitespace-only
+    //filter(Boolean) is a shorthand trick in JavaScript.It removes all falsy values from the array ("", null, undefined, false, 0).
 
     const otherFacility = (form.get("facility_other") || "").trim();
     if (otherFacility) facility.push(otherFacility);
@@ -109,6 +128,7 @@ const AddRoom = () => {
 
     try {
       const image = await ImageBBUpload(img);
+      // console.log(date);
       const room = {
         date,
         title,

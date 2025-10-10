@@ -18,10 +18,9 @@ import HostMenu from "./Menu/HostMenu";
 import AdminMenu from "./Menu/AdminMenu";
 import ToggleBtn from "../shared/Button/Togglebtn";
 const Sidebar = () => {
-  const { logOut } = useAuth();
+  const { logOut, toggle, setToggle } = useAuth();
   const [role, isLoading] = useRole();
   const [isActive, setActive] = useState(false);
-  const [toggle, setToggle] = useState(true);
 
   // Sidebar Responsive Handler
   const handleToggle = () => {
@@ -29,8 +28,11 @@ const Sidebar = () => {
   };
 
   // toggleBtn
+  // useState(() => {
+  //   setToggle(!toggle);
+  // }, [toggle]);
   const toggleHandler = (e) => {
-    console.log(e.target.checked);
+    // console.log(e.target.checked);
     setToggle(!toggle);
   };
 
@@ -83,18 +85,8 @@ const Sidebar = () => {
 
             {/*  Menu Items */}
             <nav>
-              
-
+              {role === "host" && (!toggle ? <HostMenu /> : <GuestMenu />)}
               {role === "guest" && <GuestMenu />}
-              {role === "host" ? (
-                !toggle ? (
-                  <HostMenu />
-                ) : (
-                  <GuestMenu />
-                )
-              ) : (
-                <Navigate to="/dashboard" />
-              )}
               {role === "admin" && <AdminMenu />}
             </nav>
           </div>

@@ -9,15 +9,18 @@ import UpdateRoomModal from "../../Modal/UpdateRoomModal";
 import useAuth from "../../../hooks/useAuth";
 import { ImageBBUpload } from "../../../api/utilities";
 import DeleteModal from "../../Modal/DeleteModal";
+import { useLocation } from "react-router-dom";
 
 const RoomDataRow = ({ room, refetch }) => {
-  console.log(room);
+  // console.log(room);
+  const path = useLocation();
+  // console.log(path);
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen]=useState(false);
-  
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
   const [date, setDate] = useState([
     {
       startDate: new Date(room?.from),
@@ -31,15 +34,17 @@ const RoomDataRow = ({ room, refetch }) => {
     setIsOpen(false);
   };
 
-  const closeDeleteModal=()=>{
+  const closeDeleteModal = () => {
     setIsDeleteModalOpen(false);
-  }
+  };
 
   const { mutateAsync: updateRoomAsync, isPending } = useMutation({
     mutationKey: ["update-room"],
     mutationFn: async (roomData) => {
-      console.log();
-      const { data } = await axiosSecure.patch(`/update-room/${room?._id}`,roomData);
+      const { data } = await axiosSecure.patch(
+        `/update-room/${room?._id}`,
+        roomData
+      );
       return data;
     },
     onSuccess: () => {
@@ -118,12 +123,11 @@ const RoomDataRow = ({ room, refetch }) => {
     let img = room?.image;
     try {
       if (image && image.size > 0) {
-
         try {
           const uploadedUrl = await ImageBBUpload(image); // your function
           img = uploadedUrl;
         } catch (err) {
-          toast.error("Image upload failed");
+          toast.error("Image upload failed", err.message);
           return;
         }
       }
@@ -137,7 +141,7 @@ const RoomDataRow = ({ room, refetch }) => {
         price,
         host,
         guests,
-        image:img,
+        image: img,
         bathrooms,
         bedrooms,
         response_rate,
@@ -152,7 +156,7 @@ const RoomDataRow = ({ room, refetch }) => {
         cancellation_before,
         address_line,
       };
-      console.log(room);
+      // console.log(room);
       const data = await updateRoomAsync(room);
       if (data.modifiedCount > 0) {
         toast.success("Room has been updated!!");
@@ -171,33 +175,87 @@ const RoomDataRow = ({ room, refetch }) => {
   };
 
   // delete room
-  const {mutateAsync:deleteRoomAsync,isPending:isDeletePending}=useMutation({
-    mutationKey:['delete-room'],
-    mutationFn:async(id)=>{
-      const {data}=await axiosSecure.delete(`/room-delete/${id}`);
-      console.log(id);
-      return data;
-    },
-    onSuccess:()=>{
-      setLoading(false);
-      closeDeleteModal();
-      refetch();
-    }
-  })
+  const { mutateAsync: deleteRoomAsync, isPending: isDeletePending } =
+    useMutation({
+      mutationKey: ["delete-room"],
+      mutationFn: async ({ id, reason }) => {
+        console.log("coming this far 4");
 
-  const handleDeleteRoom=async(id)=>{
+        const { data } = await axiosSecure.delete(
+          `/room-delete/${id}?reason=${reason}`
+        );
+        return data;
+      },
+      onSuccess: () => {
+        setLoading(false);
+        closeDeleteModal();
+        refetch();
+        console.log("coming this far 5");
+      },
+    });
+
+  const handleDeleteRoom = async (e, id) => {
+    e.preventDefault();
     setLoading(true);
-    try{
-      const data=await deleteRoomAsync(id);
+
+    const reason = e.target.reason.value;
+    console.log(reason);
+    try {
+      console.log("coming this far 2", id);
+      const data = await deleteRoomAsync({ id, reason });
       console.log(data);
-      toast.success('Room has been deleted!!!');
-    }catch(err){
+      toast.success("Room has been deleted!!!");
+    } catch (err) {
       toast.error(err.message);
       setLoading(false);
     }
-  }
+  };
 
-  if (isPending||isDeletePending) return <LoadingSpinner />;
+  // delete room
+  const { mutateAsync: deleteBookingAsync, isPending: isDeleteBookingPending } =
+    useMutation({
+      mutationKey: ["delete-booking"],
+      mutationFn: async ({ id, reason }) => {
+        const { data } = await axiosSecure.delete(
+          `/bookings/${id}?reason=${reason}`
+        );
+        // console.log(id);
+        return data;
+      },
+      onSuccess: () => {
+        setLoading(false);
+        closeDeleteModal();
+        refetch();
+      },
+    });
+
+  const handleDeleteBooking = async (e, id) => {
+    e.preventDefault();
+    setLoading(true);
+    const reason = e.target.reason.value;
+    // console.log(reason);
+    try {
+      await deleteBookingAsync({ id, reason });
+      await axiosSecure.patch(`/update-room-status/${room?.roomId}`, {
+        status: false,
+      });
+      // console.log(data);
+      toast.success("Booking has been deleted!!!");
+    } catch (err) {
+      toast.error(err.message);
+      setLoading(false);
+    }
+  };
+
+  if (isPending || isDeletePending || isDeleteBookingPending) {
+    return (
+      <tr>
+        <td colSpan={7} className="py-6">
+          <LoadingSpinner />
+        </td>
+      </tr>
+    );
+  }
   return (
     <tr>
       <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
@@ -233,7 +291,10 @@ const RoomDataRow = ({ room, refetch }) => {
         </p>
       </td>
       <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-        <button onClick={()=>setIsDeleteModalOpen(true)} className="relative cursor-pointer inline-block px-3 py-1 font-semibold text-green-900 leading-tight">
+        <button
+          onClick={() => setIsDeleteModalOpen(true)}
+          className="relative cursor-pointer inline-block px-3 py-1 font-semibold text-green-900 leading-tight"
+        >
           <span
             aria-hidden="true"
             className="absolute inset-0 bg-red-200 opacity-50 rounded-full"
@@ -241,19 +302,37 @@ const RoomDataRow = ({ room, refetch }) => {
           <span className="relative">Delete</span>
         </button>
         {/* Delete modal */}
-        <DeleteModal id={room?._id} closeModal={closeDeleteModal} isOpen={isDeleteModalOpen} loading={loading} handleDeleteRoom={handleDeleteRoom}/>
+        {path.pathname !== "/dashboard/manage-bookings" ? (
+          <DeleteModal
+            id={room?._id}
+            closeModal={closeDeleteModal}
+            isOpen={isDeleteModalOpen}
+            loading={loading}
+            handleDeleteRoom={handleDeleteRoom}
+          />
+        ) : (
+          <DeleteModal
+            id={room?._id}
+            closeModal={closeDeleteModal}
+            isOpen={isDeleteModalOpen}
+            loading={loading}
+            handleDeleteRoom={handleDeleteBooking}
+          />
+        )}
       </td>
       <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-        <button
-          onClick={() => setIsOpen(true)}
-          className="relative cursor-pointer inline-block px-3 py-1 font-semibold text-green-900 leading-tight"
-        >
-          <span
-            aria-hidden="true"
-            className="absolute inset-0 bg-green-200 opacity-50 rounded-full"
-          ></span>
-          <span className="relative">Update</span>
-        </button>
+        {path.pathname !== "/dashboard/manage-bookings" && (
+          <button
+            onClick={() => setIsOpen(true)}
+            className="relative cursor-pointer inline-block px-3 py-1 font-semibold text-green-900 leading-tight"
+          >
+            <span
+              aria-hidden="true"
+              className="absolute inset-0 bg-green-200 opacity-50 rounded-full"
+            ></span>
+            <span className="relative">Update</span>
+          </button>
+        )}
         {/* Update Modal */}
         <UpdateRoomModal
           handleUpdateRoom={handleUpdateRoom}

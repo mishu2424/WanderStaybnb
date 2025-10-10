@@ -16,7 +16,7 @@ const ManageBookings = () => {
         }
     })
 
-    console.log(bookings);
+    // console.log(bookings);
     
     if(isLoading||loading) return <LoadingSpinner/>;
   return (
@@ -73,7 +73,7 @@ const ManageBookings = () => {
                 <tbody>
                     {/* Table row data */}
                     {
-                        bookings.map(room=><RoomDataRow key={room?._id} room={room}/>)
+                        bookings.map(room=><RoomDataRow key={room?._id} room={room} refetch={refetch}/>)
                     }
                 </tbody>
               </table>

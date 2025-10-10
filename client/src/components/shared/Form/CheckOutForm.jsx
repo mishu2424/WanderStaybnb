@@ -11,7 +11,7 @@ import useRole from "../../../hooks/useRole";
 import { CardElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import "./CheckOutForm.css";
 const CheckOutForm = ({ closeModal, bookingInfo }) => {
-  const { user } = useAuth();
+  const { user, setToggle, toggleHandler } = useAuth();
   const [role] = useRole();
   const [clientSecret, setClientSecret] = useState("");
   const [cardError, setCardError] = useState("");
@@ -23,7 +23,7 @@ const CheckOutForm = ({ closeModal, bookingInfo }) => {
 
   useEffect(() => {
     const total = bookingInfo?.total;
-    console.log(total);
+    // console.log(total);
     if (total > 1) {
       getClientSecret({ total });
     }
@@ -31,9 +31,9 @@ const CheckOutForm = ({ closeModal, bookingInfo }) => {
   }, [bookingInfo?.total]);
 
   const getClientSecret = async (price) => {
-    console.log(price);
+    // console.log(price);
     const { data } = await axiosSecure.post(`/create-payment-intent`, price);
-    console.log(data);
+    // console.log(data);
     setClientSecret(data.clientSecret);
   };
 
@@ -62,6 +62,8 @@ const CheckOutForm = ({ closeModal, bookingInfo }) => {
       onSuccess: () => {
         toast.success("Booking Confirmed");
         closeModal();
+        setToggle(true);
+        // toggleHandler();
         navigate("/dashboard/my-bookings");
       },
       onError: () => {
@@ -75,6 +77,17 @@ const CheckOutForm = ({ closeModal, bookingInfo }) => {
     // if (role === "admin")
     //   return toast.error("Admin account cannot book the rooms");
 
+    // Prevent booking in the past
+    const today = new Date();
+    const checkIn = new Date(bookingInfo.from);
+    const checkOut = new Date(bookingInfo.to);
+
+    if (checkIn < today || checkOut < today) {
+      toast.error("You cannot book for past dates!");
+      return;
+    }
+
+    
     if (user?.email === bookingInfo?.host?.email)
       return toast.error("You are not allowed to reserve this room!");
 
@@ -102,13 +115,13 @@ const CheckOutForm = ({ closeModal, bookingInfo }) => {
     });
 
     if (error) {
-      console.log("[error]", error);
+      // console.log("[error]", error);
       setProcessing(false);
       setCardError(error.message);
       return;
     } else {
       setCardError("");
-      console.log("[PaymentMethod]", paymentMethod);
+      // console.log("[PaymentMethod]", paymentMethod);
     }
 
     const { error: confirmError, paymentIntent } =
@@ -131,7 +144,7 @@ const CheckOutForm = ({ closeModal, bookingInfo }) => {
     if (paymentIntent.status === "succeeded") {
       const booking = {
         ...bookingInfo,
-        roomId:bookingInfo?._id,
+        roomId: bookingInfo?._id,
         date: new Date(),
         transactionId: paymentIntent.id,
         guest: {
@@ -178,15 +191,13 @@ const CheckOutForm = ({ closeModal, bookingInfo }) => {
       <div className="flex mt-2 justify-around">
         <button
           type="submit"
-          disabled={
-            !stripe || processing || bookingInfo?.booked
-          }
+          disabled={!stripe || processing || bookingInfo?.booked}
           className="inline-flex cursor-pointer justify-center rounded-md border border-transparent bg-green-100 px-4 py-2 text-sm font-medium text-green-900 hover:bg-green-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-500 focus-visible:ring-offset-2"
         >
           {processing ? (
             <ImSpinner9 className="animate-spin m-auto" />
           ) : (
-            `Pay ${bookingInfo?.total}`
+            `Pay $${bookingInfo?.total}`
           )}
         </button>
         <button
