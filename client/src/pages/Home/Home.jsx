@@ -16,7 +16,7 @@ const Home = () => {
             <Article/>
             <ShowReviews/>
             <WebsiteReview/>
-            <LogoMarquee/>
+            {/* <LogoMarquee/> */}
         </div>
     );
 };

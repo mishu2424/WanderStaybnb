@@ -18,6 +18,7 @@ const options = {
   series: [{ color: "#F43F5E" }],
 };
 const SalesLineChart = ({ data }) => {
+  console.log(data);
   const [loading, setLoading] = useState(true);
   // console.log(data);
 

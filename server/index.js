@@ -13,7 +13,11 @@ const port = process.env.PORT || 8000;
 
 // middleware
 const corsOptions = {
-  origin: ["http://localhost:5173", "http://localhost:5174"],
+  origin: [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "https://wanderstaybnb-auth.web.app",
+  ],
   credentials: true,
   optionsSuccessStatus: 200,
 };
@@ -532,7 +536,7 @@ async function run() {
     app.patch(
       `/update-user-role/:email`,
       verifyToken,
-      verifyHost,
+      verifyAdmin,
       async (req, res) => {
         const email = req?.params?.email;
 
@@ -818,7 +822,7 @@ async function run() {
     });
 
     // host-stats
-    app.get("/host-stats", verifyToken, async (req, res) => {
+    app.get("/host-stats", verifyToken, verifyHost, async (req, res) => {
       const { email } = req?.user;
       const bookings = await bookingCollection
         .find(
@@ -850,12 +854,16 @@ async function run() {
         0
       );
 
+      console.log(totalSales);
+
       const chartData = bookings.map((booking) => {
         const day = new Date(booking?.date).getDate();
         const month = new Date(booking?.date).getMonth() + 1;
         const data = [`${day}/${month}`, Number(booking?.price)];
         return data;
       });
+
+      chartData.unshift(["Day", "Sales"]);
 
       res.send({
         totalBookings: bookings.length,
@@ -867,7 +875,7 @@ async function run() {
     });
 
     // admin-stats
-    app.get("/admin-stats", verifyToken, async (req, res) => {
+    app.get("/admin-stats", verifyToken, verifyAdmin, async (req, res) => {
       const { email } = req?.user;
       const bookings = await bookingCollection
         .find({
@@ -901,6 +909,7 @@ async function run() {
         const data = [`${day}/${month}`, Number(booking?.price)];
         return data;
       });
+      chartData.unshift(["Day", "Sales"]);
 
       res.send({
         totalBookings: bookings.length,
