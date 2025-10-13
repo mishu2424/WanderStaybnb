@@ -186,4 +186,4 @@ If you plan to make major changes, please open an issue first to discuss what yo
 🧑‍💻 Author
 Apurbo Dey Mishu
 📧 <apurbodeymishu856@gmail.com>
-💼 [LinkedIn](https://www.linkedin.com/in/apurbo-dey-mishu-7509812ba)
+💼 **[LinkedIn](https://www.linkedin.com/in/apurbo-dey-mishu-7509812ba)**
