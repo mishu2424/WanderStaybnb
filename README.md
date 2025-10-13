@@ -7,8 +7,8 @@ It offers seamless booking, secure payments, role-based dashboards, and a rich i
 
 ## 🚀 Live Demo
 
-🔗 **Client:** [https://wanderstaybnb-auth.web.app](#)  
-🔗 **Server:** [https://wanderstay-server.vercel.app](#)
+🔗 **Client:** [https://wanderstaybnb-auth.web.app]  
+🔗 **Server:** [https://wanderstay-server.vercel.app]
 
 ---
 
